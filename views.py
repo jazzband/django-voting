@@ -1,7 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.template import loader, RequestContext
 
 from voting.models import Vote
@@ -107,10 +107,10 @@ def xmlhttprequest_vote_on_object(request, model, direction,
             Contains an error message if the vote was not successfully
             processed.
     """
-    if not request.user.is_authenticated():
-        return json_error_response('Not authenticated.')
     if request.method == 'GET':
         return json_error_response('XMLHttpRequest votes can only be made using POST.')
+    if not request.user.is_authenticated():
+        return json_error_response('Not authenticated.')
 
     try:
         vote = dict(VOTE_DIRECTIONS)[direction]
