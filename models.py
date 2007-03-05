@@ -103,6 +103,8 @@ class Vote(models.Model):
 
     class Meta:
         db_table = 'votes'
+        verbose_name = 'Vote'
+        verbose_name_plural = 'Votes'
         # Enforce one vote per user per object
         unique_together = (('user', 'content_type', 'object_id'),)
 
