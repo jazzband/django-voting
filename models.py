@@ -80,6 +80,8 @@ GROUP BY object_id""" % self.model._meta.db_table
         Get the vote made on the given object by the given user, or
         ``None`` if no matching vote exists.
         """
+        if not user.is_authenticated():
+            return None
         ctype = ContentType.objects.get_for_model(obj)
         try:
             vote = self.get(content_type=ctype, object_id=obj.id, user=user)
