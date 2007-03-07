@@ -69,7 +69,7 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
         elif request.REQUEST.has_key('next'):
             next = request.REQUEST['next']
         else:
-            next = obj.permalink()
+            next = obj.get_absolute_url()
         return HttpResponseRedirect(next)
     else:
         if not template_name:
