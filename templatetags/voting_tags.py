@@ -5,6 +5,8 @@ from voting.models import Vote
 
 register = template.Library()
 
+# Tags
+
 class ScoreForObjectNode(template.Node):
     def __init__(self, object, context_var):
         self.object = object
@@ -33,7 +35,6 @@ class VoteByUserNode(template.Node):
         context[self.context_var] = Vote.objects.get_for_user(self.object, self.user)
         return ''
 
-@register.tag(name='score_for_object')
 def do_score_for_object(parser, token):
     """
     Retrieves the total score for an object and the number of votes
@@ -54,7 +55,6 @@ def do_score_for_object(parser, token):
         raise template.TemplateSyntaxError("second argument to '%s' tag must be 'as'" % bits[0])
     return ScoreForObjectNode(bits[1], bits[3])
 
-@register.tag(name='vote_by_user')
 def do_vote_by_user(parser, token):
     """
     Retrieves the ``Vote`` cast by a user on a particular object and
@@ -72,7 +72,11 @@ def do_vote_by_user(parser, token):
         raise template.TemplateSyntaxError("third argument to '%s' tag must be 'as'" % bits[0])
     return VoteByUserNode(bits[1], bits[2], bits[4])
 
-@register.simple_tag
+register.tag('score_for_object', do_score_for_object)
+register.tag('vote_by_user', do_vote_by_user)
+
+# Simple Tags
+
 def confirm_vote_message(object_description, vote_direction):
     """
     Creates an appropriate message asking the user to confirm the given vote
@@ -88,7 +92,10 @@ def confirm_vote_message(object_description, vote_direction):
         message = 'Confirm <strong>%s</strong> vote for <strong>%%s</strong>.' % vote_direction
     return message % (escape(object_description),)
 
-@register.filter
+register.simple_tag(confirm_vote_message)
+
+# Filters
+
 def vote_display(vote, arg=None):
     """
     Given a string mapping values for up and down votes, returns one
@@ -116,3 +123,5 @@ def vote_display(vote, arg=None):
     if vote.vote == 1:
         return up
     return down
+
+register.filter(vote_display)
