@@ -72,7 +72,7 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
                 next = obj.get_absolute_url()
             else:
                 next = obj.get_absolute_url
-        else
+        else:
             raise AttributeError('Generic vote view must be called with either post_vote_redirect, a "next" parameter in the request, or the object being voted on must define a get_absolute_url method or property.')
         Vote.objects.record_vote(obj, request.user, vote)
         return HttpResponseRedirect(next)
