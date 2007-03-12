@@ -9,6 +9,17 @@ registering of votes for any ``Model`` instance.
 Installation
 ============
 
+Google Code recommends doing the Subversion checkout like so::
+
+    svn checkout http://django-voting.googlecode.com/svn/trunk/ django-voting
+
+But the hyphen in the application name can cause issues installing
+into a DB, so it's really better to do this::
+
+    svn checkout http://django-voting.googlecode.com/svn/trunk/ voting
+
+If you've already downloaded, rename the directory before installing.
+
 To install django-voting, do the following:
 
     1. Put ``'voting'`` in your ``INSTALLED_APPS`` setting.
