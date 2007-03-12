@@ -63,13 +63,18 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
         raise Http404, 'No %s found for %s.' % (model._meta.app_label, lookup_kwargs)
 
     if request.method == 'POST':
-        Vote.objects.record_vote(obj, request.user, vote)
         if post_vote_redirect is not None:
             next = post_vote_redirect
         elif request.REQUEST.has_key('next'):
             next = request.REQUEST['next']
-        else:
-            next = obj.get_absolute_url()
+        elif hasattr(obj, 'get_absolute_url'):
+            if callable(getattr(obj, 'get_absolute_url')):
+                next = obj.get_absolute_url()
+            else:
+                next = obj.get_absolute_url
+        else
+            raise AttributeError('Generic vote view must be called with either post_vote_redirect, a "next" parameter in the request, or the object being voted on must define a get_absolute_url method or property.')
+        Vote.objects.record_vote(obj, request.user, vote)
         return HttpResponseRedirect(next)
     else:
         if not template_name:
