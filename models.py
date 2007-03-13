@@ -89,6 +89,20 @@ GROUP BY object_id""" % self.model._meta.db_table
             vote = None
         return vote
 
+    def get_for_user_in_bulk(self, objects, user):
+        """
+        Get a dictionary mapping object ids to votes made by the given
+        user on the corresponding objects.
+        """
+        vote_dict = {}
+        if len(objects) > 0:
+            ctype = ContentType.objects.get_for_model(objects[0])
+            votes = list(self.filter(content_type__pk=ctype.id,
+                                     object_id__in=[obj.id for obj in objects],
+                                     user__pk=user.id))
+            vote_dict = dict([(vote.object_id, vote) for vote in votes])
+        return vote_dict
+
 SCORES = (
     ('+1', +1),
     ('-1', -1),
