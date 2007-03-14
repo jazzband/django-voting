@@ -79,6 +79,12 @@ functions:
 
       Returns a dictionary with ``score`` and ``num_votes`` keys.
 
+    * ``get_scores_in_bulk(objects)`` -- Gets score and vote count
+      details for all the given objects. Score details consist of a
+      dictionary which has ``score`` and ``num_vote`` keys.
+
+      Returns a dictionary mapping object ids to score details.
+
     * ``get_top(Model, limit=10, reversed=False)`` -- Gets the top
       ``limit`` scored objects for a given model.
 
@@ -311,6 +317,17 @@ Example usage::
 
     {{ score.score }} point{{ score.score|pluralize }}
     after {{ score.num_votes }} vote{{ score.num_votes|pluralize }}
+
+scores_for_objects
+~~~~~~~~~~~~~~~~~~
+
+Retrieves the total scores and number of votes cast for a list of
+objects as a dictionary keyed with the objects' ids and stores it in a
+context variable.
+
+Example usage::
+
+    {% scores_for_objects widget_list as scores %}
 
 vote_by_user
 ~~~~~~~~~~~~

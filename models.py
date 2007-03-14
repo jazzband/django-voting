@@ -1,4 +1,4 @@
-from django.db import models, connection
+from django.db import backend, connection, models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 
@@ -16,6 +16,29 @@ WHERE content_type_id = %%s
         cursor.execute(query, [ctype.id, obj.id])
         result = cursor.fetchall()[0]
         return {'score': result[0] or 0, 'num_votes': result[1]}
+
+    def get_scores_in_bulk(self, objects):
+        """
+        Get a dictionary mapping object ids to total score and number
+        of votes for each object.
+        """
+        query = """
+SELECT object_id, SUM(vote), COUNT(vote)
+FROM %s
+WHERE content_type_id = %%s
+  AND object_id IN (%s)
+GROUP BY object_id""" % (
+            backend.quote_name(self.model._meta.db_table),
+            ','.join(['%s'] * len(objects))
+        )
+        ctype = ContentType.objects.get_for_model(objects[0])
+        cursor = connection.cursor()
+        cursor.execute(query, [ctype.id] + [obj.id for obj in objects])
+        results = cursor.fetchall()
+        return dict([(object_id, {
+                          'score': score,
+                          'num_votes': num_votes,
+                      }) for object_id, score, num_votes in results])
 
     def record_vote(self, obj, user, vote):
         """

@@ -20,6 +20,19 @@ class ScoreForObjectNode(template.Node):
         context[self.context_var] = Vote.objects.get_score(self.object)
         return ''
 
+class ScoresForObjectsNode(template.Node):
+    def __init__(self, objects, context_var):
+        self.objects = objects
+        self.context_var = context_var
+
+    def render(self, context):
+        try:
+            objects = template.resolve_variable(self.objects, context)
+        except template.VariableDoesNotExist:
+            return ''
+        context[self.context_var] = Vote.objects.get_scores_in_bulk(objects)
+        return ''
+
 class VoteByUserNode(template.Node):
     def __init__(self, user, object, context_var):
         self.user = user
@@ -85,6 +98,22 @@ def do_score_for_object(parser, token):
         raise template.TemplateSyntaxError("second argument to '%s' tag must be 'as'" % bits[0])
     return ScoreForObjectNode(bits[1], bits[3])
 
+def do_scores_for_objects(parser, token):
+    """
+    Retrieves the total scores for a list of objects and the number of
+    votes they have received and stores them in a context variable.
+
+    Example usage::
+
+        {% scores_for_objects widget_list as score_dict %}
+    """
+    bits = token.contents.split()
+    if len(bits) != 4:
+        raise template.TemplateSyntaxError("'%s' tag takes exactly three arguments" % bits[0])
+    if bits[2] != 'as':
+        raise template.TemplateSyntaxError("second argument to '%s' tag must be 'as'" % bits[0])
+    return ScoresForObjectsNode(bits[1], bits[3])
+
 def do_vote_by_user(parser, token):
     """
     Retrieves the ``Vote`` cast by a user on a particular object and
@@ -140,6 +169,7 @@ def do_vote_for_item(parser, token):
     return VoteForItemNode(bits[1], bits[3], bits[5])
 
 register.tag('score_for_object', do_score_for_object)
+register.tag('scores_for_objects', do_scores_for_objects)
 register.tag('vote_by_user', do_vote_by_user)
 register.tag('votes_by_user', do_votes_by_user)
 register.tag('vote_for_item', do_vote_for_item)
