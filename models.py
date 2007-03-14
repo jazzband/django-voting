@@ -5,12 +5,14 @@ from django.contrib.auth.models import User
 class VoteManager(models.Manager):
     def get_score(self, obj):
         """
-        Get the total score for ``obj`` and the number of votes it's received.
+        Get a dictionary containing the total score for ``obj`` and
+        the number of votes it's received.
         """
         query = """
-SELECT SUM(vote), COUNT(*) FROM %s
+SELECT SUM(vote), COUNT(*)
+FROM %s
 WHERE content_type_id = %%s
-  AND object_id = %%s""" % self.model._meta.db_table
+  AND object_id = %%s""" % backend.quote_name(self.model._meta.db_table)
         ctype = ContentType.objects.get_for_model(obj)
         cursor = connection.cursor()
         cursor.execute(query, [ctype.id, obj.id])
@@ -70,9 +72,10 @@ GROUP BY object_id""" % (
         """
         ctype = ContentType.objects.get_for_model(Model)
         query = """
-SELECT object_id, SUM(vote) AS score FROM %s
+SELECT object_id, SUM(vote)
+FROM %s
 WHERE content_type_id = %%s
-GROUP BY object_id""" % self.model._meta.db_table
+GROUP BY object_id""" % backend.quote_name(self.model._meta.db_table)
         if reversed:
             query += 'HAVING SUM(vote) < 0 ORDER BY SUM(vote) ASC LIMIT %s'
         else:
