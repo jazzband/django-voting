@@ -17,7 +17,7 @@ class ScoreForObjectNode(template.Node):
             object = template.resolve_variable(self.object, context)
         except template.VariableDoesNotExist:
             return ''
-        context[self.context_var] = Vote.objects.get_score(self.object)
+        context[self.context_var] = Vote.objects.get_score(object)
         return ''
 
 class ScoresForObjectsNode(template.Node):
@@ -41,11 +41,11 @@ class VoteByUserNode(template.Node):
 
     def render(self, context):
         try:
-            self.user = template.resolve_variable(self.user, context)
-            self.object = template.resolve_variable(self.object, context)
+            user = template.resolve_variable(self.user, context)
+            object = template.resolve_variable(self.object, context)
         except template.VariableDoesNotExist:
             return ''
-        context[self.context_var] = Vote.objects.get_for_user(self.object, self.user)
+        context[self.context_var] = Vote.objects.get_for_user(object, user)
         return ''
 
 class VotesByUserNode(template.Node):
