@@ -99,6 +99,11 @@ functions:
       object by the given user, or ``None`` if no matching vote
       exists.
 
+    * ``get_for_user_in_bulk(objects, user)`` -- Gets the votes
+      made on all the given objects by the given user.
+
+      Returns a dictionary mapping object ids to votes.
+
 Basic usage
 -----------
 
@@ -317,6 +322,31 @@ context variable will be ``None``.
 Example usage::
 
     {% vote_by_user user widget as vote %}
+
+votes_by_user
+~~~~~~~~~~~~~
+
+Retrieves the votes cast by a user on a list of objects as a
+dictionary keyed with object ids and stores it in a context
+variable.
+
+Example usage::
+
+    {% votes_by_user user widget_list as vote_dict %}
+
+vote_for_item
+~~~~~~~~~~~~~
+
+Given an object and a dictionary mapping object ids to votes - as
+returned, for example, by the votes_by_user template tag - retrieves
+the vote for the given object and stores it in a context variable,
+or ``None`` if no vote exists for the given object.
+
+Yes, it's a dictionary lookup tag by another name :p
+
+Example usage::
+
+    {% vote_for_item object from vote_dict as vote %}
 
 confirm_vote_message
 ~~~~~~~~~~~~~~~~~~~~
