@@ -14,7 +14,7 @@ class ScoreForObjectNode(template.Node):
 
     def render(self, context):
         try:
-            self.object = template.resolve_variable(self.object, context)
+            object = template.resolve_variable(self.object, context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = Vote.objects.get_score(self.object)
@@ -63,19 +63,19 @@ class VotesByUserNode(template.Node):
         context[self.context_var] = Vote.objects.get_for_user_in_bulk(objects, user)
         return ''
 
-class VoteForItemNode(template.Node):
-    def __init__(self, item, votes, context_var):
+class DictEntryForItemNode(template.Node):
+    def __init__(self, item, dictionary, context_var):
         self.item = item
-        self.votes = votes
+        self.dictionary = dictionary
         self.context_var = context_var
 
     def render(self, context):
         try:
-            votes = template.resolve_variable(self.votes, context)
+            dictionary = template.resolve_variable(self.dictionary, context)
             item = template.resolve_variable(self.item, context)
         except template.VariableDoesNotExist:
             return ''
-        context[self.context_var] = votes.get(item.id, None)
+        context[self.context_var] = dictionary.get(item.id, None)
         return ''
 
 def do_score_for_object(parser, token):
@@ -86,7 +86,7 @@ def do_score_for_object(parser, token):
 
     Example usage::
 
-        {% score_for_object object as score %}
+        {% score_for_object widget as score %}
 
         {{ score.score }}point{{ score.score|pluralize }}
         after {{ score.num_votes }} vote{{ score.num_votes|pluralize }}
@@ -122,14 +122,16 @@ def do_vote_by_user(parser, token):
 
     Example usage::
 
-        {% vote_by_user user object as vote %}
+        {% vote_by_user user on widget as vote %}
     """
     bits = token.contents.split()
-    if len(bits) != 5:
-        raise template.TemplateSyntaxError("'%s' tag takes exactly four arguments" % bits[0])
-    if bits[3] != 'as':
-        raise template.TemplateSyntaxError("third argument to '%s' tag must be 'as'" % bits[0])
-    return VoteByUserNode(bits[1], bits[2], bits[4])
+    if len(bits) != 6:
+        raise template.TemplateSyntaxError("'%s' tag takes exactly five arguments" % bits[0])
+    if bits[2] != 'on':
+        raise template.TemplateSyntaxError("second argument to '%s' tag must be 'on'" % bits[0])
+    if bits[4] != 'as':
+        raise template.TemplateSyntaxError("fourth argument to '%s' tag must be 'as'" % bits[0])
+    return VoteByUserNode(bits[1], bits[3], bits[5])
 
 def do_votes_by_user(parser, token):
     """
@@ -139,25 +141,28 @@ def do_votes_by_user(parser, token):
 
     Example usage::
 
-        {% votes_by_user user object_list as vote_dict %}
+        {% votes_by_user user on widget_list as vote_dict %}
     """
     bits = token.contents.split()
-    if len(bits) != 5:
+    if len(bits) != 6:
         raise template.TemplateSyntaxError("'%s' tag takes exactly four arguments" % bits[0])
-    if bits[3] != 'as':
-        raise template.TemplateSyntaxError("third argument to '%s' tag must be 'as'" % bits[0])
-    return VotesByUserNode(bits[1], bits[2], bits[4])
+    if bits[2] != 'on':
+        raise template.TemplateSyntaxError("second argument to '%s' tag must be 'on'" % bits[0])
+    if bits[4] != 'as':
+        raise template.TemplateSyntaxError("fourth argument to '%s' tag must be 'as'" % bits[0])
+    return VotesByUserNode(bits[1], bits[3], bits[5])
 
-def do_vote_for_item(parser, token):
+def do_dict_entry_for_item(parser, token):
     """
-    Given an object and a dictionary mapping object ids to votes made
-    by the current user, retrieves the vote for a given object and
-    stores it in a context variable, storing ``None`` if no vote
+    Given an object and a dictionary keyed with object ids - as
+    returned by the ``votes_by_user`` and ``scores_for_objects``
+    template tags - retrieves the value for the given object and
+    stores it in a context variable, storing ``None`` if no value
     exists for the given object.
 
     Example usage::
 
-        {% vote_for_item object from vote_dict as vote %}
+        {% dict_entry_for_item widget from vote_dict as vote %}
     """
     bits = token.contents.split()
     if len(bits) != 6:
@@ -166,13 +171,13 @@ def do_vote_for_item(parser, token):
         raise template.TemplateSyntaxError("second argument to '%s' tag must be 'from'" % bits[0])
     if bits[4] != 'as':
         raise template.TemplateSyntaxError("fourth argument to '%s' tag must be 'as'" % bits[0])
-    return VoteForItemNode(bits[1], bits[3], bits[5])
+    return DictEntryForItemNode(bits[1], bits[3], bits[5])
 
 register.tag('score_for_object', do_score_for_object)
 register.tag('scores_for_objects', do_scores_for_objects)
 register.tag('vote_by_user', do_vote_by_user)
 register.tag('votes_by_user', do_votes_by_user)
-register.tag('vote_for_item', do_vote_for_item)
+register.tag('dict_entry_for_item', do_dict_entry_for_item)
 
 # Simple Tags
 
@@ -183,7 +188,7 @@ def confirm_vote_message(object_description, vote_direction):
 
     Example usage::
 
-        {% confirm_vote_message object.title direction %}
+        {% confirm_vote_message widget.title direction %}
     """
     if vote_direction == 'clear':
         message = 'Confirm clearing your vote for <strong>%s</strong>.'

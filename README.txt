@@ -281,7 +281,7 @@ redirecting.
 
 **JSON text context:**
 
-The context provided by the JSON text returned will will be:
+The context provided by the JSON text returned will be:
 
     * ``success``: ``true`` if the vote was successfully processed,
       ``false`` otherwise.
@@ -338,7 +338,7 @@ context variable will be ``None``.
 
 Example usage::
 
-    {% vote_by_user user widget as vote %}
+    {% vote_by_user user on widget as vote %}
 
 votes_by_user
 ~~~~~~~~~~~~~
@@ -349,21 +349,19 @@ variable.
 
 Example usage::
 
-    {% votes_by_user user widget_list as vote_dict %}
+    {% votes_by_user user on widget_list as vote_dict %}
 
-vote_for_item
-~~~~~~~~~~~~~
+dict_entry_for_item
+~~~~~~~~~~~~~~~~~~~
 
-Given an object and a dictionary mapping object ids to votes - as
-returned, for example, by the votes_by_user template tag - retrieves
-the vote for the given object and stores it in a context variable,
-or ``None`` if no vote exists for the given object.
-
-Yes, it's a dictionary lookup tag by another name :p
+Given an object and a dictionary keyed with object ids - as returned
+by the ``votes_by_user`` and ``scores_for_objects`` template tags -
+retrieves the value for the given object and stores it in a context
+variable, storing ``None`` if no value exists for the given object.
 
 Example usage::
 
-    {% vote_for_item object from vote_dict as vote %}
+    {% dict_entry_for_item widget from vote_dict as vote %}
 
 confirm_vote_message
 ~~~~~~~~~~~~~~~~~~~~
