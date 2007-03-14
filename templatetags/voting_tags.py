@@ -50,6 +50,21 @@ class VotesByUserNode(template.Node):
         context[self.context_var] = Vote.objects.get_for_user_in_bulk(objects, user)
         return ''
 
+class VoteForItemNode(template.Node):
+    def __init__(self, item, votes, context_var):
+        self.item = item
+        self.votes = votes
+        self.context_var = context_var
+
+    def render(self, context):
+        try:
+            votes = template.resolve_variable(self.votes, context)
+            item = template.resolve_variable(self.item, context)
+        except template.VariableDoesNotExist:
+            return ''
+        context[self.context_var] = votes.get(item.id, None)
+        return ''
+
 def do_score_for_object(parser, token):
     """
     Retrieves the total score for an object and the number of votes
@@ -104,9 +119,30 @@ def do_votes_by_user(parser, token):
         raise template.TemplateSyntaxError("third argument to '%s' tag must be 'as'" % bits[0])
     return VotesByUserNode(bits[1], bits[2], bits[4])
 
+def do_vote_for_item(parser, token):
+    """
+    Given an object and a dictionary mapping object ids to votes made
+    by the current user, retrieves the vote for a given object and
+    stores it in a context variable, storing ``None`` if no vote
+    exists for the given object.
+
+    Example usage::
+
+        {% vote_for_item object from vote_dict as vote %}
+    """
+    bits = token.contents.split()
+    if len(bits) != 6:
+        raise template.TemplateSyntaxError("'%s' tag takes exactly five arguments" % bits[0])
+    if bits[2] != 'from':
+        raise template.TemplateSyntaxError("second argument to '%s' tag must be 'from'" % bits[0])
+    if bits[4] != 'as':
+        raise template.TemplateSyntaxError("fourth argument to '%s' tag must be 'as'" % bits[0])
+    return VoteForItemNode(bits[1], bits[3], bits[5])
+
 register.tag('score_for_object', do_score_for_object)
 register.tag('vote_by_user', do_vote_by_user)
 register.tag('votes_by_user', do_votes_by_user)
+register.tag('vote_for_item', do_vote_for_item)
 
 # Simple Tags
 
