@@ -83,9 +83,9 @@ FROM %s
 WHERE content_type_id = %%s
 GROUP BY object_id""" % backend.quote_name(self.model._meta.db_table)
         if reversed:
-            query += 'HAVING SUM(vote) < 0 ORDER BY SUM(vote) ASC LIMIT %s'
+            query += ' HAVING SUM(vote) < 0 ORDER BY SUM(vote) ASC LIMIT %s'
         else:
-            query += 'HAVING SUM(vote) > 0 ORDER BY SUM(vote) DESC LIMIT %s'
+            query += ' HAVING SUM(vote) > 0 ORDER BY SUM(vote) DESC LIMIT %s'
         cursor = connection.cursor()
         cursor.execute(query, [ctype.id, limit])
         results = cursor.fetchall()
