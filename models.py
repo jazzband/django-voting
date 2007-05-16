@@ -2,6 +2,12 @@ from django.db import backend, connection, models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 
+# Generic relations were moved in Django revision 5172
+try:
+    from django.contrib.contenttypes import generic
+except ImportError:
+    import django.db.models as generic
+
 class VoteManager(models.Manager):
     def get_score(self, obj):
         """
@@ -138,7 +144,7 @@ class Vote(models.Model):
     user = models.ForeignKey(User)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    object = models.GenericForeignKey('content_type', 'object_id')
+    object = generic.GenericForeignKey('content_type', 'object_id')
     vote = models.SmallIntegerField(choices=SCORES)
 
     objects = VoteManager()
