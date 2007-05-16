@@ -38,6 +38,11 @@ r"""
 >>> Vote.objects.get_score(i1)
 {'score': 0, 'num_votes': 4}
 
+>>> Vote.objects.record_vote(i1, user, -2)
+Traceback (most recent call last):
+    ...
+ValueError: ['Invalid vote (must be +1/0/-1)']
+
 # Retrieval of votes #########################################################
 
 >>> i2 = Item.objects.create(name='test2')
