@@ -41,7 +41,7 @@ r"""
 >>> Vote.objects.record_vote(i1, user, -2)
 Traceback (most recent call last):
     ...
-ValueError: ['Invalid vote (must be +1/0/-1)']
+ValueError: Invalid vote (must be +1/0/-1)
 
 # Retrieval of votes #########################################################
 
@@ -64,5 +64,7 @@ True
 >>> votes = Vote.objects.get_for_user_in_bulk([i1, i2, i3, i4], users[0])
 >>> [(id, vote.vote) for id, vote in votes.items()]
 [(1, -1), (2, 1), (3, -1)]
+>>> Vote.objects.get_for_user_in_bulk([], users[0])
+{}
 
 """
