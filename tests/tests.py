@@ -67,4 +67,17 @@ True
 >>> Vote.objects.get_for_user_in_bulk([], users[0])
 {}
 
+>>> for user in users[1:]:
+...     Vote.objects.record_vote(i2, user, +1)
+...     Vote.objects.record_vote(i3, user, +1)
+...     Vote.objects.record_vote(i4, user, +1)
+>>> list(Vote.objects.get_top(Item))
+[(<Item: test2>, 4), (<Item: test4>, 3), (<Item: test3>, 2)]
+>>> for user in users[1:]:
+...     Vote.objects.record_vote(i2, user, -1)
+...     Vote.objects.record_vote(i3, user, -1)
+...     Vote.objects.record_vote(i4, user, -1)
+>>> list(Vote.objects.get_bottom(Item))
+[(<Item: test3>, -4), (<Item: test4>, -3), (<Item: test2>, -2)]
+
 """

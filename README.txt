@@ -22,8 +22,9 @@ If you've already downloaded, rename the directory before installing.
 
 To install django-voting, do the following:
 
-    1. Put ``'voting'`` in your ``INSTALLED_APPS`` setting.
-    2. Run the command ``manage.py syncdb``.
+    1. Put the ``voting`` folder somewhere on your Python path.
+    2. Put ``'voting'`` in your ``INSTALLED_APPS`` setting.
+    3. Run the command ``manage.py syncdb``.
 
 The ``syncdb`` command creates the necessary database tables and
 creates permission objects for all installed apps that need them.
