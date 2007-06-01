@@ -80,4 +80,6 @@ True
 >>> list(Vote.objects.get_bottom(Item))
 [(<Item: test3>, -4), (<Item: test4>, -3), (<Item: test2>, -2)]
 
+>>> Vote.objects.get_scores_in_bulk([i1, i2, i3, i4])
+{1: {'score': 0, 'num_votes': 4}, 2: {'score': -2, 'num_votes': 4}, 3: {'score': -4, 'num_votes': 4}, 4: {'score': -3, 'num_votes': 3}}
 """

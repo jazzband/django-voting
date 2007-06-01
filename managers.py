@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import backend, connection, models
 from django.contrib.contenttypes.models import ContentType
 
@@ -16,7 +17,9 @@ class VoteManager(models.Manager):
         cursor = connection.cursor()
         cursor.execute(query, [ctype.id, obj._get_pk_val()])
         result = cursor.fetchall()[0]
-        return {'score': result[0] or 0, 'num_votes': result[1]}
+        # MySQL returns floats and longs respectively for these
+        # results, so we need to convert them to ints explicitly.
+        return {'score': result[0] and int(result[0]) or 0, 'num_votes': int(result[1])}
 
     def get_scores_in_bulk(self, objects):
         """
@@ -36,9 +39,9 @@ class VoteManager(models.Manager):
         cursor = connection.cursor()
         cursor.execute(query, [ctype.id] + [obj._get_pk_val() for obj in objects])
         results = cursor.fetchall()
-        return dict([(object_id, {
-                          'score': score,
-                          'num_votes': num_votes,
+        return dict([(int(object_id), {
+                          'score': int(score),
+                          'num_votes': int(num_votes),
                       }) for object_id, score, num_votes in results])
 
     def record_vote(self, obj, user, vote):
@@ -71,14 +74,27 @@ class VoteManager(models.Manager):
         """
         ctype = ContentType.objects.get_for_model(Model)
         query = """
-        SELECT object_id, SUM(vote)
+        SELECT object_id, SUM(vote) as %s
         FROM %s
         WHERE content_type_id = %%s
-        GROUP BY object_id""" % backend.quote_name(self.model._meta.db_table)
-        if reversed:
-            query += ' HAVING SUM(vote) < 0 ORDER BY SUM(vote) ASC LIMIT %s'
+        GROUP BY object_id""" % (
+            backend.quote_name('score'),
+            backend.quote_name(self.model._meta.db_table),
+        )
+
+        # MySQL has issues with re-using the aggregate function in the
+        # HAVING clause, so we alias the score and use this alias for
+        # its benefit.
+        if settings.DATABASE_ENGINE == 'mysql':
+            having_score = backend.quote_name('score')
         else:
-            query += ' HAVING SUM(vote) > 0 ORDER BY SUM(vote) DESC LIMIT %s'
+            having_score = 'SUM(vote)'
+        if reversed:
+            having_sql = ' HAVING %(having_score)s < 0 ORDER BY %(having_score)s ASC LIMIT %%s'
+        else:
+            having_sql = ' HAVING %(having_score)s > 0 ORDER BY %(having_score)s DESC LIMIT %%s'
+        query += having_sql % {'having_score': having_score}
+
         cursor = connection.cursor()
         cursor.execute(query, [ctype.id, limit])
         results = cursor.fetchall()
@@ -90,7 +106,7 @@ class VoteManager(models.Manager):
         # relations, missing objects are silently ignored.
         for id, score in results:
             if id in objects:
-                yield objects[id], score
+                yield objects[id], int(score)
 
     def get_bottom(self, Model, limit=10):
         """
