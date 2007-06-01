@@ -9,7 +9,7 @@ class VoteManager(models.Manager):
         the number of votes it's received.
         """
         query = """
-        SELECT SUM(vote), COUNT(*)
+        SELECT SUM(vote), COUNT(vote)
         FROM %s
         WHERE content_type_id = %%s
           AND object_id = %%s""" % backend.quote_name(self.model._meta.db_table)
