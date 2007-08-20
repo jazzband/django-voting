@@ -1,6 +1,8 @@
 from django.conf import settings
-from django.db import backend, connection, models
+from django.db import connection, models
 from django.contrib.contenttypes.models import ContentType
+
+qn = connection.ops.quote_name
 
 class VoteManager(models.Manager):
     def get_score(self, obj):
@@ -12,14 +14,17 @@ class VoteManager(models.Manager):
         SELECT SUM(vote), COUNT(vote)
         FROM %s
         WHERE content_type_id = %%s
-          AND object_id = %%s""" % backend.quote_name(self.model._meta.db_table)
+          AND object_id = %%s""" % qn(self.model._meta.db_table)
         ctype = ContentType.objects.get_for_model(obj)
         cursor = connection.cursor()
         cursor.execute(query, [ctype.id, obj._get_pk_val()])
         result = cursor.fetchall()[0]
         # MySQL returns floats and longs respectively for these
         # results, so we need to convert them to ints explicitly.
-        return {'score': result[0] and int(result[0]) or 0, 'num_votes': int(result[1])}
+        return {
+            'score': result[0] and int(result[0]) or 0,
+            'num_votes': int(result[1]),
+        }
 
     def get_scores_in_bulk(self, objects):
         """
@@ -32,12 +37,13 @@ class VoteManager(models.Manager):
         WHERE content_type_id = %%s
           AND object_id IN (%s)
         GROUP BY object_id""" % (
-            backend.quote_name(self.model._meta.db_table),
+            qn(self.model._meta.db_table),
             ','.join(['%s'] * len(objects))
         )
         ctype = ContentType.objects.get_for_model(objects[0])
         cursor = connection.cursor()
-        cursor.execute(query, [ctype.id] + [obj._get_pk_val() for obj in objects])
+        cursor.execute(query, [ctype.id] + [obj._get_pk_val() \
+                                            for obj in objects])
         results = cursor.fetchall()
         return dict([(int(object_id), {
                           'score': int(score),
@@ -55,7 +61,8 @@ class VoteManager(models.Manager):
             raise ValueError('Invalid vote (must be +1/0/-1)')
         ctype = ContentType.objects.get_for_model(obj)
         try:
-            v = self.get(user=user, content_type=ctype, object_id=obj._get_pk_val())
+            v = self.get(user=user, content_type=ctype,
+                         object_id=obj._get_pk_val())
             if vote == 0:
                 v.delete()
             else:
@@ -78,25 +85,28 @@ class VoteManager(models.Manager):
         FROM %s
         WHERE content_type_id = %%s
         GROUP BY object_id""" % (
-            backend.quote_name('score'),
-            backend.quote_name(self.model._meta.db_table),
+            qn('score'),
+            qn(self.model._meta.db_table),
         )
 
         # MySQL has issues with re-using the aggregate function in the
         # HAVING clause, so we alias the score and use this alias for
         # its benefit.
         if settings.DATABASE_ENGINE == 'mysql':
-            having_score = backend.quote_name('score')
+            having_score = qn('score')
         else:
             having_score = 'SUM(vote)'
         if reversed:
-            having_sql = ' HAVING %(having_score)s < 0 ORDER BY %(having_score)s ASC LIMIT %%s'
+            having_sql = ' HAVING %(having_score)s < 0 ORDER BY %(having_score)s ASC %(limit_offset)s'
         else:
-            having_sql = ' HAVING %(having_score)s > 0 ORDER BY %(having_score)s DESC LIMIT %%s'
-        query += having_sql % {'having_score': having_score}
+            having_sql = ' HAVING %(having_score)s > 0 ORDER BY %(having_score)s DESC %(limit_offset)s'
+        query += having_sql % {
+            'having_score': having_score,
+            'limit_offset': connection.ops.limit_offset_sql(limit),
+        }
 
         cursor = connection.cursor()
-        cursor.execute(query, [ctype.id, limit])
+        cursor.execute(query, [ctype.id])
         results = cursor.fetchall()
 
         # Use in_bulk() to avoid O(limit) db hits.
@@ -110,7 +120,8 @@ class VoteManager(models.Manager):
 
     def get_bottom(self, Model, limit=10):
         """
-        Get the bottom (i.e. most negative) N scored objects for a given model.
+        Get the bottom (i.e. most negative) N scored objects for a given
+        model.
 
         Yields (object, score) tuples.
         """
@@ -125,7 +136,8 @@ class VoteManager(models.Manager):
             return None
         ctype = ContentType.objects.get_for_model(obj)
         try:
-            vote = self.get(content_type=ctype, object_id=obj._get_pk_val(), user=user)
+            vote = self.get(content_type=ctype, object_id=obj._get_pk_val(),
+                            user=user)
         except models.ObjectDoesNotExist:
             vote = None
         return vote
@@ -139,7 +151,8 @@ class VoteManager(models.Manager):
         if len(objects) > 0:
             ctype = ContentType.objects.get_for_model(objects[0])
             votes = list(self.filter(content_type__pk=ctype.id,
-                                     object_id__in=[obj._get_pk_val() for obj in objects],
+                                     object_id__in=[obj._get_pk_val() \
+                                                    for obj in objects],
                                      user__pk=user.id))
             vote_dict = dict([(vote.object_id, vote) for vote in votes])
         return vote_dict
