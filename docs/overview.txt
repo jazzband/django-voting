@@ -124,7 +124,7 @@ Votes are recorded using the ``record_vote`` helper function::
     >>> from voting.models import Vote
     >>> user = User.objects.get(pk=1)
     >>> widget = Widget.objects.get(pk=1)
-    >>> Vote.objects.record_vote(user, widget, +1)
+    >>> Vote.objects.record_vote(widget, user, +1)
 
 The score for an object can be retrieved using the ``get_score``
 helper function::
@@ -135,10 +135,10 @@ helper function::
 If the same user makes another vote on the same object, their vote
 is either modified or deleted, as appropriate::
 
-    >>> Vote.objects.record_vote(user, widget, -1)
+    >>> Vote.objects.record_vote(widget, user, -1)
     >>> Vote.objects.get_score(widget)
     {'score': -1, 'num_votes': 1}
-    >>> Vote.objects.record_vote(user, widget, 0)
+    >>> Vote.objects.record_vote(widget, user, 0)
     >>> Vote.objects.get_score(widget)
     {'score': 0, 'num_votes': 0}
 
