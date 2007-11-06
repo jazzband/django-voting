@@ -31,24 +31,27 @@ class VoteManager(models.Manager):
         Get a dictionary mapping object ids to total score and number
         of votes for each object.
         """
-        query = """
-        SELECT object_id, SUM(vote), COUNT(vote)
-        FROM %s
-        WHERE content_type_id = %%s
-          AND object_id IN (%s)
-        GROUP BY object_id""" % (
-            qn(self.model._meta.db_table),
-            ','.join(['%s'] * len(objects))
-        )
-        ctype = ContentType.objects.get_for_model(objects[0])
-        cursor = connection.cursor()
-        cursor.execute(query, [ctype.id] + [obj._get_pk_val() \
-                                            for obj in objects])
-        results = cursor.fetchall()
-        return dict([(int(object_id), {
-                          'score': int(score),
-                          'num_votes': int(num_votes),
-                      }) for object_id, score, num_votes in results])
+        vote_dict = {}
+        if len(objects) > 0:
+            query = """
+            SELECT object_id, SUM(vote), COUNT(vote)
+            FROM %s
+            WHERE content_type_id = %%s
+              AND object_id IN (%s)
+            GROUP BY object_id""" % (
+                qn(self.model._meta.db_table),
+                ','.join(['%s'] * len(objects))
+            )
+            ctype = ContentType.objects.get_for_model(objects[0])
+            cursor = connection.cursor()
+            cursor.execute(query, [ctype.id] + [obj._get_pk_val() \
+                                                for obj in objects])
+            results = cursor.fetchall()
+            vote_dict = dict([(int(object_id), {
+                              'score': int(score),
+                              'num_votes': int(num_votes),
+                          }) for object_id, score, num_votes in results])
+        return vote_dict
 
     def record_vote(self, obj, user, vote):
         """
