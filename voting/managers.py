@@ -100,16 +100,15 @@ class VoteManager(models.Manager):
         else:
             having_score = 'SUM(vote)'
         if reversed:
-            having_sql = ' HAVING %(having_score)s < 0 ORDER BY %(having_score)s ASC %(limit_offset)s'
+            having_sql = ' HAVING %(having_score)s < 0 ORDER BY %(having_score)s ASC LIMIT %%s'
         else:
-            having_sql = ' HAVING %(having_score)s > 0 ORDER BY %(having_score)s DESC %(limit_offset)s'
+            having_sql = ' HAVING %(having_score)s > 0 ORDER BY %(having_score)s DESC LIMIT %%s'
         query += having_sql % {
             'having_score': having_score,
-            'limit_offset': connection.ops.limit_offset_sql(limit),
         }
 
         cursor = connection.cursor()
-        cursor.execute(query, [ctype.id])
+        cursor.execute(query, [ctype.id, limit])
         results = cursor.fetchall()
 
         # Use in_bulk() to avoid O(limit) db hits.

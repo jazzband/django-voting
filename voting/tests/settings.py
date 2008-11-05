@@ -1,7 +1,6 @@
 import os
-DIRNAME = os.path.dirname(__file__)
 
-DEFAULT_CHARSET = 'utf-8'
+DIRNAME = os.path.dirname(__file__)
 
 DATABASE_ENGINE = 'sqlite3'
 DATABASE_NAME = os.path.join(DIRNAME, 'database.db')

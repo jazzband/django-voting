@@ -27,9 +27,6 @@ class Vote(models.Model):
         # One vote per user per object
         unique_together = (('user', 'content_type', 'object_id'),)
 
-    class Admin:
-        pass
-
     def __unicode__(self):
         return u'%s: %s on %s' % (self.user, self.vote, self.object)
 

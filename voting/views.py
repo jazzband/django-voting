@@ -34,9 +34,7 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
         direction
             The type of vote which will be registered for the object.
     """
-    if (allow_xmlhttprequest and
-        request.META.has_key('HTTP_X_REQUESTED_WITH') and
-        request.META['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'):
+    if allow_xmlhttprequest and request.is_ajax():
         return xmlhttprequest_vote_on_object(request, model, direction,
                                              object_id=object_id, slug=slug,
                                              slug_field=slug_field)
@@ -48,7 +46,7 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
     try:
         vote = dict(VOTE_DIRECTIONS)[direction]
     except KeyError:
-        raise AttributeError('\'%s\' is not a valid vote type.' % vote_type)
+        raise AttributeError("'%s' is not a valid vote type." % vote_type)
 
     # Look up the object to be voted on
     lookup_kwargs = {}
@@ -57,7 +55,8 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
     elif slug and slug_field:
         lookup_kwargs['%s__exact' % slug_field] = slug
     else:
-        raise AttributeError('Generic vote view must be called with either object_id slug/slug_field.')
+        raise AttributeError('Generic vote view must be called with either '
+                             'object_id or slug and slug_field.')
     try:
         obj = model._default_manager.get(**lookup_kwargs)
     except ObjectDoesNotExist:
@@ -74,12 +73,17 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
             else:
                 next = obj.get_absolute_url
         else:
-            raise AttributeError('Generic vote view must be called with either post_vote_redirect, a "next" parameter in the request, or the object being voted on must define a get_absolute_url method or property.')
+            raise AttributeError('Generic vote view must be called with either '
+                                 'post_vote_redirect, a "next" parameter in '
+                                 'the request, or the object being voted on '
+                                 'must define a get_absolute_url method or '
+                                 'property.')
         Vote.objects.record_vote(obj, request.user, vote)
         return HttpResponseRedirect(next)
     else:
         if not template_name:
-            template_name = '%s/%s_confirm_vote.html' % (model._meta.app_label, model._meta.object_name.lower())
+            template_name = '%s/%s_confirm_vote.html' % (
+                model._meta.app_label, model._meta.object_name.lower())
         t = template_loader.get_template(template_name)
         c = RequestContext(request, {
             template_object_name: obj,
@@ -93,7 +97,7 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
         response = HttpResponse(t.render(c))
         return response
 
-def json_error_response(error_message, *args, **kwargs):
+def json_error_response(error_message):
     return HttpResponse(simplejson.dumps(dict(success=False,
                                               error_message=error_message)))
 
@@ -114,14 +118,16 @@ def xmlhttprequest_vote_on_object(request, model, direction,
             processed.
     """
     if request.method == 'GET':
-        return json_error_response('XMLHttpRequest votes can only be made using POST.')
+        return json_error_response(
+            'XMLHttpRequest votes can only be made using POST.')
     if not request.user.is_authenticated():
         return json_error_response('Not authenticated.')
 
     try:
         vote = dict(VOTE_DIRECTIONS)[direction]
     except KeyError:
-        return json_error_response('\'%s\' is not a valid vote type.' % direction)
+        return json_error_response(
+            '\'%s\' is not a valid vote type.' % direction)
 
     # Look up the object to be voted on
     lookup_kwargs = {}
@@ -130,13 +136,18 @@ def xmlhttprequest_vote_on_object(request, model, direction,
     elif slug and slug_field:
         lookup_kwargs['%s__exact' % slug_field] = slug
     else:
-        return json_error_response('Generic XMLHttpRequest vote view must be called with either object_id or slug/slug_field.')
+        return json_error_response('Generic XMLHttpRequest vote view must be '
+                                   'called with either object_id or slug and '
+                                   'slug_field.')
     try:
         obj = model._default_manager.get(**lookup_kwargs)
     except ObjectDoesNotExist:
-        return json_error_response('No %s found for %s.' % (model._meta.verbose_name, lookup_kwargs))
+        return json_error_response(
+            'No %s found for %s.' % (model._meta.verbose_name, lookup_kwargs))
 
     # Vote and respond
     Vote.objects.record_vote(obj, request.user, vote)
-    return HttpResponse(simplejson.dumps({'success': True,
-                                          'score': Vote.objects.get_score(obj)}))
+    return HttpResponse(simplejson.dumps({
+        'success': True,
+        'score': Vote.objects.get_score(obj),
+    }))

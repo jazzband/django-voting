@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 r"""
 >>> from django.contrib.auth.models import User
 >>> from voting.models import Vote
