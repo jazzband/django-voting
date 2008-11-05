@@ -2,27 +2,21 @@ from django.conf import settings
 from django.db import connection, models
 from django.contrib.contenttypes.models import ContentType
 
-qn = connection.ops.quote_name
-
 class VoteManager(models.Manager):
     def get_score(self, obj):
         """
         Get a dictionary containing the total score for ``obj`` and
         the number of votes it's received.
         """
-        query = """
-        SELECT SUM(vote), COUNT(vote)
-        FROM %s
-        WHERE content_type_id = %%s
-          AND object_id = %%s""" % qn(self.model._meta.db_table)
         ctype = ContentType.objects.get_for_model(obj)
-        cursor = connection.cursor()
-        cursor.execute(query, [ctype.id, obj._get_pk_val()])
-        result = cursor.fetchall()[0]
-        # MySQL returns floats and longs respectively for these
-        # results, so we need to convert them to ints explicitly.
+        result = self.filter(object_id=obj.id, content_type=ctype).extra(
+            select={
+                'score': 'COALESCE(SUM(vote), 0)',
+                'num_votes': 'COALESCE(COUNT(vote), 0)',
+        }).values_list('score', 'num_votes')[0]
+
         return {
-            'score': result[0] and int(result[0]) or 0,
+            'score': int(result[0]),
             'num_votes': int(result[1]),
         }
 
@@ -31,26 +25,22 @@ class VoteManager(models.Manager):
         Get a dictionary mapping object ids to total score and number
         of votes for each object.
         """
+        object_ids = [o.id for o in objects]
+        if not object_ids:
+            return {}
+
+        ctype = ContentType.objects.get_for_model(objects[0])
+        ctype = ContentType.objects.get_for_model(objects[0])
+        queryset = self.filter(
+            object_id__in=object_ids, content_type=ctype).extra(
+            select={
+                'score': 'COALESCE(SUM(vote), 0)',
+                'num_votes': 'COALESCE(COUNT(vote), 0)',
+        }).values_list('object_id', 'score', 'num_votes')
+        queryset.query.group_by.append('object_id')
         vote_dict = {}
-        if len(objects) > 0:
-            query = """
-            SELECT object_id, SUM(vote), COUNT(vote)
-            FROM %s
-            WHERE content_type_id = %%s
-              AND object_id IN (%s)
-            GROUP BY object_id""" % (
-                qn(self.model._meta.db_table),
-                ','.join(['%s'] * len(objects))
-            )
-            ctype = ContentType.objects.get_for_model(objects[0])
-            cursor = connection.cursor()
-            cursor.execute(query, [ctype.id] + [obj._get_pk_val() \
-                                                for obj in objects])
-            results = cursor.fetchall()
-            vote_dict = dict([(int(object_id), {
-                              'score': int(score),
-                              'num_votes': int(num_votes),
-                          }) for object_id, score, num_votes in results])
+        for id, score, num_votes in queryset:
+            vote_dict[id] = {'score': int(score), 'num_votes': int(num_votes)}
         return vote_dict
 
     def record_vote(self, obj, user, vote):
@@ -88,15 +78,15 @@ class VoteManager(models.Manager):
         FROM %s
         WHERE content_type_id = %%s
         GROUP BY object_id""" % (
-            qn('score'),
-            qn(self.model._meta.db_table),
+            connection.ops.quote_name('score'),
+            connection.ops.quote_name(self.model._meta.db_table),
         )
 
         # MySQL has issues with re-using the aggregate function in the
         # HAVING clause, so we alias the score and use this alias for
         # its benefit.
         if settings.DATABASE_ENGINE == 'mysql':
-            having_score = qn('score')
+            having_score = connection.ops.quote_name('score')
         else:
             having_score = 'SUM(vote)'
         if reversed:
