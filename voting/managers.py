@@ -9,7 +9,8 @@ class VoteManager(models.Manager):
         the number of votes it's received.
         """
         ctype = ContentType.objects.get_for_model(obj)
-        result = self.filter(object_id=obj.id, content_type=ctype).extra(
+        result = self.filter(object_id=obj._get_pk_val(),
+                             content_type=ctype).extra(
             select={
                 'score': 'COALESCE(SUM(vote), 0)',
                 'num_votes': 'COALESCE(COUNT(vote), 0)',
@@ -25,7 +26,7 @@ class VoteManager(models.Manager):
         Get a dictionary mapping object ids to total score and number
         of votes for each object.
         """
-        object_ids = [o.id for o in objects]
+        object_ids = [o._get_pk_val() for o in objects]
         if not object_ids:
             return {}
 
