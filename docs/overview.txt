@@ -162,7 +162,7 @@ voting at the same URL::
     widget_dict = {
         'model': Widget,
         'template_object_name': 'widget',
-        'allow_xmlhttprequest': true,
+        'allow_xmlhttprequest': True,
     }
 
     urlpatterns = patterns('',
