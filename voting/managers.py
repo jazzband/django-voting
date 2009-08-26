@@ -1,6 +1,39 @@
 from django.conf import settings
 from django.db import connection, models
+
+try:
+    from django.db.models.sql.aggregates import Aggregate
+except ImportError:
+    supports_aggregates = False
+else:
+    supports_aggregates = True
+
 from django.contrib.contenttypes.models import ContentType
+
+if supports_aggregates:
+    class CoalesceWrapper(Aggregate):
+        sql_template = 'COALESCE(%(function)s(%(field)s), %(default)s)'
+    
+        def __init__(self, lookup, **extra): 
+            self.lookup = lookup
+            self.extra = extra
+    
+        def _default_alias(self):
+            return '%s__%s' % (self.lookup, self.__class__.__name__.lower())
+        default_alias = property(_default_alias)
+    
+        def add_to_query(self, query, alias, col, source, is_summary):
+            super(CoalesceWrapper, self).__init__(col, source, is_summary, **self.extra)
+            query.aggregate_select[alias] = self
+
+
+    class CoalesceSum(CoalesceWrapper):
+        sql_function = 'SUM'
+
+
+    class CoalesceCount(CoalesceWrapper):
+        sql_function = 'COUNT'
+
 
 class VoteManager(models.Manager):
     def get_score(self, obj):
@@ -32,16 +65,36 @@ class VoteManager(models.Manager):
 
         ctype = ContentType.objects.get_for_model(objects[0])
         ctype = ContentType.objects.get_for_model(objects[0])
-        queryset = self.filter(
-            object_id__in=object_ids, content_type=ctype).extra(
-            select={
-                'score': 'COALESCE(SUM(vote), 0)',
-                'num_votes': 'COALESCE(COUNT(vote), 0)',
-        }).values_list('object_id', 'score', 'num_votes')
-        queryset.query.group_by.append('object_id')
+        
+        if supports_aggregates:
+            queryset = self.filter(
+                object_id__in = object_ids,
+                content_type = ctype,
+            ).values(
+                'object_id',
+            ).annotate(
+                score = CoalesceSum('vote', default='0'),
+                num_votes = CoalesceCount('vote', default='0'),
+            )
+        else:
+            queryset = self.filter(
+                object_id__in = object_ids,
+                content_type = ctype,
+                ).extra(
+                    select = {
+                        'score': 'COALESCE(SUM(vote), 0)',
+                        'num_votes': 'COALESCE(COUNT(vote), 0)',
+                    }
+                ).values('object_id', 'score', 'num_votes')
+            queryset.query.group_by.append('object_id')
+        
         vote_dict = {}
-        for id, score, num_votes in queryset:
-            vote_dict[id] = {'score': int(score), 'num_votes': int(num_votes)}
+        for row in queryset:
+            vote_dict[row['object_id']] = {
+                'score': int(row['score']),
+                'num_votes': int(row['num_votes']),
+            }
+        
         return vote_dict
 
     def record_vote(self, obj, user, vote):
