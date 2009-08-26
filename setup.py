@@ -15,7 +15,7 @@ else:
     version = "%d.%d" % version_tuple[:2]
 
 setup(
-    name = 'voting',
+    name = 'django-voting',
     version = version,
     description = 'Generic voting application for Django',
     author = 'Jonathan Buchanan',
