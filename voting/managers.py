@@ -62,8 +62,7 @@ class VoteManager(models.Manager):
         object_ids = [o._get_pk_val() for o in objects]
         if not object_ids:
             return {}
-
-        ctype = ContentType.objects.get_for_model(objects[0])
+        
         ctype = ContentType.objects.get_for_model(objects[0])
         
         if supports_aggregates:
