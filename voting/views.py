@@ -1,4 +1,3 @@
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.views import redirect_to_login
@@ -97,9 +96,26 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
         response = HttpResponse(t.render(c))
         return response
 
+
+def vote_on_object_with_lazy_model(request, app_label, model_name, *args,
+    **kwargs):
+    """
+    Generic object vote view that takes app_label and model_name instead
+    of a model class and calls ``vote_on_object`` view.
+    Returns HTTP 400 (Bad Request) if there is no model matching the app_label
+    and model_name.
+    """
+    model = get_model(app_label, model_name)
+    if not model:
+        return HttpResponseBadRequest('Model %s.%s does not exist' % (
+            app_label, model_name))
+    return vote_on_object(request, model=model, *args, **kwargs)
+
+
 def json_error_response(error_message):
     return HttpResponse(simplejson.dumps(dict(success=False,
                                               error_message=error_message)))
+
 
 def xmlhttprequest_vote_on_object(request, model, direction,
     object_id=None, slug=None, slug_field=None):
