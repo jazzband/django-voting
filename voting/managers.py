@@ -109,15 +109,11 @@ class VoteManager(models.Manager):
         try:
             v = self.get(user=user, content_type=ctype,
                          object_id=obj._get_pk_val())
-            if vote == 0:
-                v.delete()
-            else:
-                v.vote = vote
-                v.save()
+            v.vote = vote
+            v.save()
         except models.ObjectDoesNotExist:
-            if vote != 0:
-                self.create(user=user, content_type=ctype,
-                            object_id=obj._get_pk_val(), vote=vote)
+            self.create(user=user, content_type=ctype,
+                        object_id=obj._get_pk_val(), vote=vote)
 
     def get_top(self, Model, limit=10, reversed=False):
         """

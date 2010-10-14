@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from voting.managers import VoteManager
+from datetime import datetime
 
 SCORES = (
     (u'+1', +1),
@@ -19,6 +20,7 @@ class Vote(models.Model):
     object_id    = models.PositiveIntegerField()
     object       = generic.GenericForeignKey('content_type', 'object_id')
     vote         = models.SmallIntegerField(choices=SCORES)
+    time_stamp   = models.DateTimeField(editable = False , default=datetime.now )
 
     objects = VoteManager()
 
