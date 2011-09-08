@@ -6,8 +6,8 @@ from django.db import models
 from voting.managers import VoteManager
 
 SCORES = (
-    (u'+1', +1),
-    (u'-1', -1),
+    (+1, u'+1'),
+    (-1, u'-1'),
 )
 
 class Vote(models.Model):
