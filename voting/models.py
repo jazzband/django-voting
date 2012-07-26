@@ -9,8 +9,8 @@ from datetime import datetime
 
 
 SCORES = (
-    (u'+1', +1),
-    (u'-1', -1),
+    (+1, u'+1'),
+    (-1, u'-1'),
 )
 
 class Vote(models.Model):
