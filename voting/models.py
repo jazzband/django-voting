@@ -1,11 +1,15 @@
+from datetime import datetime
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.timezone import now, utc
+
+try:
+    from django.utils.timezone import now
+except ImportError:
+    now = datetime.now
 
 from voting.managers import VoteManager
-from datetime import datetime
 
 
 SCORES = (
@@ -13,16 +17,17 @@ SCORES = (
     (-1, u'-1'),
 )
 
+
 class Vote(models.Model):
     """
     A vote on an object by a User.
     """
-    user         = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     content_type = models.ForeignKey(ContentType)
-    object_id    = models.PositiveIntegerField()
-    object       = generic.GenericForeignKey('content_type', 'object_id')
-    vote         = models.SmallIntegerField(choices=SCORES)
-    time_stamp   = models.DateTimeField(editable = False , default=now )
+    object_id = models.PositiveIntegerField()
+    object = generic.GenericForeignKey('content_type', 'object_id')
+    vote = models.SmallIntegerField(choices=SCORES)
+    time_stamp = models.DateTimeField(editable=False, default=now)
 
     objects = VoteManager()
 

@@ -10,6 +10,7 @@ from voting.models import Vote
 
 VOTE_DIRECTIONS = (('up', 1), ('down', -1), ('clear', 0))
 
+
 def vote_on_object(request, model, direction, post_vote_redirect=None,
         object_id=None, slug=None, slug_field=None, template_name=None,
         template_loader=loader, extra_context=None, context_processors=None,
@@ -40,14 +41,15 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
                                              object_id=object_id, slug=slug,
                                              slug_field=slug_field)
 
-    if extra_context is None: extra_context = {}
+    if extra_context is None:
+        extra_context = {}
     if not request.user.is_authenticated():
         return redirect_to_login(request.path)
 
     try:
         vote = dict(VOTE_DIRECTIONS)[direction]
     except KeyError:
-        raise AttributeError("'%s' is not a valid vote type." % vote_type)
+        raise AttributeError("'%s' is not a valid vote type." % direction)
 
     # Look up the object to be voted on
     lookup_kwargs = {}
@@ -61,12 +63,13 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
     try:
         obj = model._default_manager.get(**lookup_kwargs)
     except ObjectDoesNotExist:
-        raise Http404, 'No %s found for %s.' % (model._meta.app_label, lookup_kwargs)
+        raise Http404('No %s found for %s.' %
+                      (model._meta.app_label, lookup_kwargs))
 
     if request.method == 'POST':
         if post_vote_redirect is not None:
             next = post_vote_redirect
-        elif request.REQUEST.has_key('next'):
+        elif 'next' in request.REQUEST:
             next = request.REQUEST['next']
         elif hasattr(obj, 'get_absolute_url'):
             if callable(getattr(obj, 'get_absolute_url')):
@@ -120,7 +123,7 @@ def json_error_response(error_message):
 
 
 def xmlhttprequest_vote_on_object(request, model, direction,
-    object_id=None, slug=None, slug_field=None):
+        object_id=None, slug=None, slug_field=None):
     """
     Generic object vote function for use via XMLHttpRequest.
 
