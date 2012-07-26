@@ -21,7 +21,7 @@ setup(
     author = 'Jonathan Buchanan',
     author_email = 'jonathan.buchanan@gmail.com',
     url = 'http://code.google.com/p/django-voting/',
-    packages = ['voting', 'voting.templatetags', 'voting.tests'],
+    packages = ['voting', 'voting.templatetags', 'voting.migrations', 'voting.tests'],
     classifiers = ['Development Status :: 4 - Beta',
                    'Environment :: Web Environment',
                    'Framework :: Django',
