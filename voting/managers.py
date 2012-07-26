@@ -10,6 +10,8 @@ else:
 
 from django.contrib.contenttypes.models import ContentType
 
+ZERO_VOTES_ALLOWED = getattr(settings, 'VOTING_ZERO_VOTES_ALLOWED', False)
+
 if supports_aggregates:
     class CoalesceWrapper(Aggregate):
         sql_template = 'COALESCE(%(function)s(%(field)s), %(default)s)'
@@ -107,9 +109,14 @@ class VoteManager(models.Manager):
         try:
             v = self.get(user=user, content_type=ctype,
                          object_id=obj._get_pk_val())
-            v.vote = vote
-            v.save()
+            if vote == 0 and not ZERO_VOTES_ALLOWED:
+                v.delete()
+            else:
+                v.vote = vote
+                v.save()
         except models.ObjectDoesNotExist:
+            if not ZERO_VOTES_ALLOWED and vote == 0:
+                return
             self.create(user=user, content_type=ctype,
                         object_id=obj._get_pk_val(), vote=vote)
 
