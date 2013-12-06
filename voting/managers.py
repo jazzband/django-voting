@@ -12,8 +12,12 @@ class VoteManager(models.Manager):
         the number of votes it's received.
         """
         ctype = ContentType.objects.get_for_model(obj)
-        result = (self.filter(object_id=obj._get_pk_val(), content_type=ctype)
-            .aggregate(score=Sum('vote'), num_votes=Count('vote'))
+        result = self.filter(
+            object_id=obj._get_pk_val(),
+            content_type=ctype
+        ).aggregate(
+            score=Sum('vote'),
+            num_votes=Count('vote')
         )
 
         if result['score'] is None:
