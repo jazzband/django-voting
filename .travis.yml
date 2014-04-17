@@ -4,12 +4,12 @@ install:
 script:
   - tox -e $TOX_ENV
 env:
-  - TOXENV=py26-django1.4,
-  - TOXENV=py26-django1.5,
-  - TOXENV=py26-django1.6,
-  - TOXENV=py27-django1.4,
-  - TOXENV=py27-django1.5,
-  - TOXENV=py27-django1.6,
-  - TOXENV=py33-django1.5,
-  - TOXENV=py33-django1.6,
+  - TOXENV=py26-django1.4
+  - TOXENV=py26-django1.5
+  - TOXENV=py26-django1.6
+  - TOXENV=py27-django1.4
+  - TOXENV=py27-django1.5
+  - TOXENV=py27-django1.6
+  - TOXENV=py33-django1.5
+  - TOXENV=py33-django1.6
   - TOXENV=coverage
