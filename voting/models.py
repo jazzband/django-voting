@@ -19,8 +19,8 @@ from voting.managers import VoteManager
 
 
 SCORES = (
-    (+1, u'+1'),
-    (-1, u'-1'),
+    (+1, '+1'),
+    (-1, '-1'),
 )
 
 @python_2_unicode_compatible
