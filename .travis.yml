@@ -1,8 +1,7 @@
 language: python
+python: 2.7
 install:
   - pip install tox
-script:
-  - tox -e $TOX_ENV
 env:
   - TOXENV=py26-django1.4
   - TOXENV=py26-django1.5
@@ -13,3 +12,5 @@ env:
   - TOXENV=py33-django1.5
   - TOXENV=py33-django1.6
   - TOXENV=coverage
+script:
+  - tox -e $TOX_ENV
