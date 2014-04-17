@@ -14,6 +14,12 @@ class BasicVotingTests(TestCase):
         for username in ['u1', 'u2', 'u3', 'u4']:
             self.users.append(User.objects.create_user(username, '%s@test.com' % username, 'test'))
 
+    def test_print_model(self):
+        Vote.objects.record_vote(self.item, self.users[0], +1)
+        expected = 'u1: 1 on test1'
+        result = Vote.objects.all()[0]
+        self.assertEqual(unicode(result), expected)
+
     def test_novotes(self):
         result = Vote.objects.get_score(self.item)
         self.assertEqual(result, {'score': 0, 'num_votes': 0})
