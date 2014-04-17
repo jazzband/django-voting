@@ -18,7 +18,7 @@ class BasicVotingTests(TestCase):
         Vote.objects.record_vote(self.item, self.users[0], +1)
         expected = 'u1: 1 on test1'
         result = Vote.objects.all()[0]
-        self.assertEqual(unicode(result), expected)
+        self.assertEqual(str(result), expected)
 
     def test_novotes(self):
         result = Vote.objects.get_score(self.item)
