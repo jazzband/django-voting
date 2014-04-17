@@ -13,4 +13,4 @@ env:
   - TOXENV=py33-django1.6
   - TOXENV=coverage
 script:
-  - tox -e $TOX_ENV
+  - tox -e $TOXENV
