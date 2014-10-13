@@ -1,3 +1,7 @@
+# coding: utf-8
+
+from __future__ import unicode_literals
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
