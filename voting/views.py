@@ -8,7 +8,11 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
 from django.contrib.auth.views import redirect_to_login
 from django.template import loader, RequestContext
-from django.utils import simplejson
+try:
+    import json as simplejson
+except ImportError:
+    # django.utils.simplejson is deprecated in Django 1.6+
+    from django.utils import simplejson
 
 from voting.models import Vote
 
