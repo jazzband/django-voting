@@ -8,7 +8,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
 from django.contrib.auth.views import redirect_to_login
 from django.template import loader, RequestContext
-from django.utils import simplejson
+import json
 
 from voting.models import Vote
 
@@ -122,7 +122,7 @@ def vote_on_object_with_lazy_model(request, app_label, model_name, *args,
 
 
 def json_error_response(error_message):
-    return HttpResponse(simplejson.dumps(dict(success=False,
+    return HttpResponse(json.dumps(dict(success=False,
                                               error_message=error_message)))
 
 
@@ -172,7 +172,7 @@ def xmlhttprequest_vote_on_object(request, model, direction,
 
     # Vote and respond
     Vote.objects.record_vote(obj, request.user, vote)
-    return HttpResponse(simplejson.dumps({
+    return HttpResponse(json.dumps({
         'success': True,
         'score': Vote.objects.get_score(obj),
     }))
