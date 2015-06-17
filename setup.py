@@ -15,7 +15,7 @@ setup(
     author_email='jonathan.buchanan@gmail.com',
     maintainer='Jannis Leidel',
     maintainer_email='jannis@leidel.info',
-    url='http://github.com/jezdez/django-voting/',
+    url='https://github.com/pjdelport/django-voting',
     packages=[
         'voting',
         'voting.migrations',
