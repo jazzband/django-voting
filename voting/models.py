@@ -15,7 +15,7 @@ except ImportError:
     now = datetime.now
 
 from voting.managers import VoteManager
-from voting.utils.user_models import get_user_model_name
+from voting.utils.user_model import get_user_model_name
 
 User = get_user_model_name()
 
