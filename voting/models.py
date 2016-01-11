@@ -7,7 +7,6 @@ from datetime import datetime
 from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import User
 from django.db import models
 
 try:
@@ -16,7 +15,9 @@ except ImportError:
     now = datetime.now
 
 from voting.managers import VoteManager
+from voting.utils.user_models import get_user_model_name
 
+User = get_user_model_name()
 
 SCORES = (
     (+1, '+1'),
