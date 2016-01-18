@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 
 # Dynamically calculate the version based on tagging.VERSION.
 version_tuple = __import__('voting').VERSION
