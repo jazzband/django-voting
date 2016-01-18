@@ -4,10 +4,27 @@ Django Voting
 
 This is a generic voting application for Django projects
 
-For installation instructions, see the file "INSTALL.txt" in this
-directory; for instructions on how to use this application, and on
-what it provides, see the file "overview.txt" in the "docs/"
-directory.
+
+Installation
+============
+
+1. Install the ``django-voting`` distribution
+
+2. Add ``voting`` to your ``INSTALLED_APPS``::
+
+    INSTALLED_APPS = [
+        …
+        'voting',
+        …
+    ]
+
+3. Run ``django-admin migrate``
+
+
+Usage
+=====
+
+See "overview.txt" in the "docs/" directory.
 
 
 Test suite
