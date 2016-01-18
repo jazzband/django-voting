@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -10,12 +10,9 @@ setup(
     maintainer='Jannis Leidel',
     maintainer_email='jannis@leidel.info',
     url='https://github.com/pjdelport/django-voting',
-    packages=[
-        'voting',
-        'voting.migrations',
-        'voting.templatetags',
-        'voting.tests',
-    ],
+
+    package_dir = {'':'src'},
+    packages=find_packages('src'),
 
     setup_requires=[
         'setuptools_scm',
