@@ -22,3 +22,8 @@ INSTALLED_APPS = (
     'voting',
     'test_app',
 )
+
+MIDDLEWARE_CLASSES = [
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+]
