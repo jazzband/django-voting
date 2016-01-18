@@ -9,8 +9,8 @@ Django Voting Changelog
   to query or depend on specific versions of django-voting.
 
 
-0.2
----
+0.2 (2012-07-26)
+----------------
 
 * Django 1.4 compatibility (timezone support)
 * Added a ``time_stamp`` field to ``Vote`` model
