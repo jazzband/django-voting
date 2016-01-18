@@ -9,6 +9,5 @@ env:
   - TOXENV=py34-django1.7
   - TOXENV=py34-django1.8
   - TOXENV=py34-django1.9
-  - TOXENV=coverage
 script:
   - tox -e $TOXENV
