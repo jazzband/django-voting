@@ -18,7 +18,7 @@ setup(
         'setuptools_scm',
     ],
     install_requires=[
-        'Django >=1.4, <1.9',
+        'Django >=1.7',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
