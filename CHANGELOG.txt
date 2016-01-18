@@ -7,4 +7,3 @@ Django Voting Changelog
 * Django 1.4 compatibility (timezone support)
 * Added a ``time_stamp`` field to ``Vote`` model
 * Added South migrations.
-* 
