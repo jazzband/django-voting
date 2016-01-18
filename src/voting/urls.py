@@ -2,10 +2,10 @@
 
 from __future__ import unicode_literals
 
-from django.conf.urls.defaults import *
+from django.conf.urls import url
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r"^vote/(?P<app_label>[\w\.-]+)/(?P<model_name>\w+)/"\
         "(?P<object_id>\d+)/(?P<direction>up|down|clear)/$",
         "voting.views.vote_on_object_with_lazy_model", {
@@ -13,4 +13,4 @@ urlpatterns = patterns('',
         },
         name="voting_vote"
     ),
-)
+]

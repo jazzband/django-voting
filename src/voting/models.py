@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 
 from django.utils.encoding import python_2_unicode_compatible
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import User
 from django.db import models
@@ -31,7 +31,7 @@ class Vote(models.Model):
     user = models.ForeignKey(User)
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    object = generic.GenericForeignKey('content_type', 'object_id')
+    object = GenericForeignKey('content_type', 'object_id')
     vote = models.SmallIntegerField(choices=SCORES)
     time_stamp = models.DateTimeField(editable=False, default=now)
 
