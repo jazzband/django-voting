@@ -3,14 +3,15 @@ python: 2.7
 install:
   - pip install tox
 env:
-  - TOXENV=py26-django1.4
-  - TOXENV=py26-django1.5
-  - TOXENV=py26-django1.6
   - TOXENV=py27-django1.4
   - TOXENV=py27-django1.5
   - TOXENV=py27-django1.6
-  - TOXENV=py33-django1.5
-  - TOXENV=py33-django1.6
+  - TOXENV=py27-django1.7
+  - TOXENV=py27-django1.8
+  - TOXENV=py34-django1.5
+  - TOXENV=py34-django1.6
+  - TOXENV=py34-django1.7
+  - TOXENV=py34-django1.8
   - TOXENV=coverage
 script:
   - tox -e $TOXENV
