@@ -22,6 +22,10 @@ setup(
         'voting.templatetags',
         'voting.tests',
     ],
+
+    setup_requires=[
+        'setuptools_scm',
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
