@@ -1,7 +1,20 @@
-*.egg-info
+# Python bytecode
 *.pyc
-build
-htmlcov
-MANIFEST
+*.pyo
+__pycache__
+
+# setuptools-generated
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Tox working directory
 .tox
+
+# pytest cache directory
+.cache/
+
+# Coverage
 .coverage
+htmlcov
