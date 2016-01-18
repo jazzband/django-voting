@@ -7,6 +7,7 @@ Django Voting Changelog
 * Drop the ``voting.VERSION`` field, for now.
   Client code can use APIs such as ``pkg_resources.get_distribution()``
   to query or depend on specific versions of django-voting.
+* Added Django migrations.
 
 
 0.2 (2012-07-26)
