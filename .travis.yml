@@ -3,11 +3,16 @@ python: 2.7
 install:
   - pip install tox
 env:
-  - TOXENV=py27-django1.7
   - TOXENV=py27-django1.8
   - TOXENV=py27-django1.9
-  - TOXENV=py34-django1.7
   - TOXENV=py34-django1.8
   - TOXENV=py34-django1.9
+  - TOXENV=py35-django1.8
+  - TOXENV=py35-django1.9
+  - TOXENV=pypy-django1.8
+  - TOXENV=pypy-django1.9
+  - TOXENV=py27-django1.7
+  - TOXENV=py34-django1.7
+  - TOXENV=pypy-django1.7
 script:
   - tox -e $TOXENV
