@@ -20,5 +20,12 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'voting',
-    'voting.tests',
+    'test_app',
 )
+
+MIDDLEWARE_CLASSES = [
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+]
+
+ROOT_URLCONF = 'voting.urls'

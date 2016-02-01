@@ -6,32 +6,6 @@ A generic voting application for Django projects, which allows
 registering of votes for any ``Model`` instance.
 
 
-Installation
-============
-
-Google Code recommends doing the Subversion checkout like so::
-
-    svn checkout http://django-voting.googlecode.com/svn/trunk/ django-voting
-
-But the hyphen in the application name can cause issues installing
-into a DB, so it's really better to do this::
-
-    svn checkout http://django-voting.googlecode.com/svn/trunk/ voting
-
-If you've already downloaded, rename the directory before installing.
-
-To install django-voting, do the following:
-
-    1. Put the ``voting`` folder somewhere on your Python path.
-    2. Put ``'voting'`` in your ``INSTALLED_APPS`` setting.
-    3. Run the command ``manage.py syncdb``.
-
-The ``syncdb`` command creates the necessary database tables and
-creates permission objects for all installed apps that need them.
-
-That's it!
-
-
 Votes
 =====
 

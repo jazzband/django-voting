@@ -1,0 +1,8 @@
+# http://nedbatchelder.com/code/coverage/config.html
+
+[run]
+branch = True
+source = src/
+omit =
+    */migrations/*.py
+    */south_migrations/*.py

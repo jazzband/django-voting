@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from voting.models import Vote 
-from voting.tests.models import Item
+from test_app.models import Item
 
 # Basic voting ###############################################################
 

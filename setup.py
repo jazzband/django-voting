@@ -1,26 +1,24 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
-# Dynamically calculate the version based on tagging.VERSION.
-version_tuple = __import__('voting').VERSION
-if version_tuple[2] is not None:
-    version = "%d.%d_%s" % version_tuple
-else:
-    version = "%d.%d" % version_tuple[:2]
 
 setup(
     name='django-voting',
-    version=version,
+    use_scm_version=True,
     description='Generic voting application for Django',
     author='Jonathan Buchanan',
     author_email='jonathan.buchanan@gmail.com',
     maintainer='Jannis Leidel',
     maintainer_email='jannis@leidel.info',
     url='https://github.com/pjdelport/django-voting',
-    packages=[
-        'voting',
-        'voting.migrations',
-        'voting.templatetags',
-        'voting.tests',
+
+    package_dir = {'':'src'},
+    packages=find_packages('src'),
+
+    setup_requires=[
+        'setuptools_scm',
+    ],
+    install_requires=[
+        'Django >=1.7',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
