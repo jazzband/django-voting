@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import get_model
+from django.apps import apps
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
     HttpResponseRedirect
 from django.contrib.auth.views import redirect_to_login
@@ -73,8 +73,8 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
     if request.method == 'POST':
         if post_vote_redirect is not None:
             next = post_vote_redirect
-        elif 'next' in request.REQUEST:
-            next = request.REQUEST['next']
+        elif 'next' in request.POST:
+            next = request.POST['next']
         elif hasattr(obj, 'get_absolute_url'):
             if callable(getattr(obj, 'get_absolute_url')):
                 next = obj.get_absolute_url()
@@ -114,7 +114,7 @@ def vote_on_object_with_lazy_model(request, app_label, model_name, *args,
     Returns HTTP 400 (Bad Request) if there is no model matching the app_label
     and model_name.
     """
-    model = get_model(app_label, model_name)
+    model = apps.get_model(app_label, model_name)
     if not model:
         return HttpResponseBadRequest('Model %s.%s does not exist' % (
             app_label, model_name))
