@@ -18,7 +18,7 @@ setup(
     url='https://github.com/pjdelport/django-voting',
     packages=[
         'voting',
-        'voting.migrations',
+        #'voting.migrations',
         'voting.templatetags',
         'voting.tests',
     ],
