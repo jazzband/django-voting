@@ -1,6 +1,5 @@
 language: python
-install:
-  - pip install tox
+cache: pip
 
 matrix:
   include:
@@ -37,6 +36,14 @@ matrix:
 
     - python: 'pypy'
       env: TOXENV=pypy-django1.7
+
+# Avoid overriding the default install step,
+# so that automatic pip caching works.
+#
+# See: https://github.com/travis-ci/travis-ci/issues/3239
+#
+before_script:
+  - pip install tox
 
 script:
   - tox -e $TOXENV
