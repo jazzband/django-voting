@@ -74,7 +74,7 @@ def vote_on_object(request, model, direction, post_vote_redirect=None,
         if post_vote_redirect is not None:
             next = post_vote_redirect
         elif 'next' in request.POST:
-            next = request.POST['next']
+            next = request.POST.get('next','')
         elif hasattr(obj, 'get_absolute_url'):
             if callable(getattr(obj, 'get_absolute_url')):
                 next = obj.get_absolute_url()
