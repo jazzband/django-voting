@@ -45,7 +45,7 @@ class VoteManager(models.Manager):
         ).values(
             'object_id',
         ).annotate(
-            score=Sum('vote'), 
+            score=Sum('vote'),
             num_votes=Count('vote')
         )
 
@@ -137,6 +137,7 @@ class VoteManager(models.Manager):
         user on the corresponding objects.
         """
         vote_dict = {}
+        objects = list(objects)
         if len(objects) > 0:
             ctype = ContentType.objects.get_for_model(objects[0])
             votes = list(self.filter(content_type__pk=ctype.id,
