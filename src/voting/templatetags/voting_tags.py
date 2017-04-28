@@ -65,7 +65,7 @@ class VotesByUserNode(template.Node):
     def render(self, context):
         try:
             user = template.Variable(self.user).resolve(context)
-            objects = template.Variable(self.object).resolve(context)
+            objects = template.Variable(self.objects).resolve(context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = Vote.objects.get_for_user_in_bulk(objects, user)
