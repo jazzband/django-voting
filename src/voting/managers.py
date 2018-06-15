@@ -28,6 +28,44 @@ class VoteManager(models.Manager):
             result['score'] = 0
         return result
 
+    def get_positive_score(self, obj):
+        """
+        Get a dictionary containing the total score for ``obj`` and
+        the number of votes it's received.
+        """
+        ctype = ContentType.objects.get_for_model(obj)
+        result = self.filter(
+            object_id=obj._get_pk_val(),
+            content_type=ctype,
+            vote=1
+        ).aggregate(
+            score=Sum('vote'),
+            num_votes=Count('vote')
+        )
+
+        if result['score'] is None:
+            result['score'] = 0
+        return result
+
+    def get_negative_score(self, obj):
+        """
+        Get a dictionary containing the total score for ``obj`` and
+        the number of votes it's received.
+        """
+        ctype = ContentType.objects.get_for_model(obj)
+        result = self.filter(
+            object_id=obj._get_pk_val(),
+            content_type=ctype,
+            vote=-1
+        ).aggregate(
+            score=Sum('vote'),
+            num_votes=Count('vote')
+        )
+
+        if result['score'] is None:
+            result['score'] = 0
+        return result
+
     def get_scores_in_bulk(self, objects):
         """
         Get a dictionary mapping object ids to total score and number

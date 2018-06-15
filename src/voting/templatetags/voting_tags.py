@@ -26,6 +26,34 @@ class ScoreForObjectNode(template.Node):
         return ''
 
 
+class PositiveScoreForObjectNode(template.Node):
+    def __init__(self, object, context_var):
+        self.object = object
+        self.context_var = context_var
+
+    def render(self, context):
+        try:
+            object = template.Variable(self.object).resolve(context)
+        except template.VariableDoesNotExist:
+            return ''
+        context[self.context_var] = Vote.objects.get_positive_score(object)
+        return ''
+
+
+class NegativeScoreForObjectNode(template.Node):
+    def __init__(self, object, context_var):
+        self.object = object
+        self.context_var = context_var
+
+    def render(self, context):
+        try:
+            object = template.Variable(self.object).resolve(context)
+        except template.VariableDoesNotExist:
+            return ''
+        context[self.context_var] = Vote.objects.get_negative_score(object)
+        return ''
+
+
 class ScoresForObjectsNode(template.Node):
     def __init__(self, objects, context_var):
         self.objects = objects
@@ -109,6 +137,48 @@ def do_score_for_object(parser, token):
     return ScoreForObjectNode(bits[1], bits[3])
 
 
+def do_positive_score_for_object(parser, token):
+    """
+    Retrieves the total positive score for an object and the number of votes
+    it's received and stores them in a context variable which has
+    ``score`` and ``num_votes`` properties.
+
+    Example usage::
+
+        {% positive_score_for_object widget as score %}
+
+        {{ score.score }}point{{ score.score|pluralize }}
+        after {{ score.num_votes }} vote{{ score.num_votes|pluralize }}
+    """
+    bits = token.contents.split()
+    if len(bits) != 4:
+        raise template.TemplateSyntaxError("'%s' tag takes exactly three arguments" % bits[0])
+    if bits[2] != 'as':
+        raise template.TemplateSyntaxError("second argument to '%s' tag must be 'as'" % bits[0])
+    return PositiveScoreForObjectNode(bits[1], bits[3])
+
+
+def do_negative_score_for_object(parser, token):
+    """
+    Retrieves the total negative score for an object and the number of votes
+    it's received and stores them in a context variable which has
+    ``score`` and ``num_votes`` properties.
+
+    Example usage::
+
+        {% negative_score_for_object widget as score %}
+
+        {{ score.score }}point{{ score.score|pluralize }}
+        after {{ score.num_votes }} vote{{ score.num_votes|pluralize }}
+    """
+    bits = token.contents.split()
+    if len(bits) != 4:
+        raise template.TemplateSyntaxError("'%s' tag takes exactly three arguments" % bits[0])
+    if bits[2] != 'as':
+        raise template.TemplateSyntaxError("second argument to '%s' tag must be 'as'" % bits[0])
+    return NegativeScoreForObjectNode(bits[1], bits[3])
+
+
 def do_scores_for_objects(parser, token):
     """
     Retrieves the total scores for a list of objects and the number of
@@ -188,6 +258,8 @@ def do_dict_entry_for_item(parser, token):
     return DictEntryForItemNode(bits[1], bits[3], bits[5])
 
 register.tag('score_for_object', do_score_for_object)
+register.tag('positive_score_for_object', do_positive_score_for_object)
+register.tag('negative_score_for_object', do_negative_score_for_object)
 register.tag('scores_for_objects', do_scores_for_objects)
 register.tag('vote_by_user', do_vote_by_user)
 register.tag('votes_by_user', do_votes_by_user)
