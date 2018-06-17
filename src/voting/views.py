@@ -175,4 +175,6 @@ def xmlhttprequest_vote_on_object(request, model, direction,
     return HttpResponse(json.dumps({
         'success': True,
         'score': Vote.objects.get_score(obj),
+        'positive_score': Vote.objects.get_positive_score(obj),
+        'negative_score': Vote.objects.get_negative_score(obj),
     }))
