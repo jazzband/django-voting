@@ -2,6 +2,26 @@
 Django Voting
 =============
 
+.. image:: https://jazzband.co/static/img/badge.svg
+   :target: https://jazzband.co/
+   :alt: Jazzband
+
+.. image:: https://img.shields.io/github/stars/jazzband/django-voting.svg?label=Stars&style=socialcA
+   :target: https://github.com/jazzband/django-voting
+   :alt: GitHub
+
+.. image:: https://img.shields.io/pypi/v/django-voting.svg
+   :target: https://pypi.org/project/django-voting/
+   :alt: PyPI release
+
+.. image:: https://secure.travis-ci.org/jazzband/django-voting.svg?branch=master
+   :target: http://travis-ci.org/jazzband/django-voting
+   :alt: Build Status
+
+.. image:: https://codecov.io/gh/jazzband/django-voting/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/jazzband/django-voting
+   :alt: Coverage
+
 This is a generic voting application for Django projects
 
 
