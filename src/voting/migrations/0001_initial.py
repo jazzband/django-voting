@@ -21,8 +21,8 @@ class Migration(migrations.Migration):
                 ('object_id', models.PositiveIntegerField()),
                 ('vote', models.SmallIntegerField(choices=[(1, '+1'), (-1, '-1')])),
                 ('time_stamp', models.DateTimeField(editable=False, default=django.utils.timezone.now)),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'db_table': 'votes',

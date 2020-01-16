@@ -19,7 +19,7 @@ class ScoreForObjectNode(template.Node):
 
     def render(self, context):
         try:
-            object = template.resolve_variable(self.object, context)
+            object = template.Variable(self.object).resolve(context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = Vote.objects.get_score(object)
@@ -33,7 +33,7 @@ class ScoresForObjectsNode(template.Node):
 
     def render(self, context):
         try:
-            objects = template.resolve_variable(self.objects, context)
+            objects = template.Variable(self.object).resolve(context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = Vote.objects.get_scores_in_bulk(objects)
@@ -48,8 +48,8 @@ class VoteByUserNode(template.Node):
 
     def render(self, context):
         try:
-            user = template.resolve_variable(self.user, context)
-            object = template.resolve_variable(self.object, context)
+            user = template.Variable(self.user).resolve(context)
+            object = template.Variable(self.object).resolve(context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = Vote.objects.get_for_user(object, user)
@@ -64,8 +64,8 @@ class VotesByUserNode(template.Node):
 
     def render(self, context):
         try:
-            user = template.resolve_variable(self.user, context)
-            objects = template.resolve_variable(self.objects, context)
+            user = template.Variable(self.user).resolve(context)
+            objects = template.Variable(self.object).resolve(context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = Vote.objects.get_for_user_in_bulk(objects, user)
@@ -80,8 +80,8 @@ class DictEntryForItemNode(template.Node):
 
     def render(self, context):
         try:
-            dictionary = template.resolve_variable(self.dictionary, context)
-            item = template.resolve_variable(self.item, context)
+            dictionary = template.Variable(self.dictionary).resolve(context)
+            item = template.Variable(self.item).resolve(context)
         except template.VariableDoesNotExist:
             return ''
         context[self.context_var] = dictionary.get(item.id, None)
