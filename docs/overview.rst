@@ -341,7 +341,7 @@ Example usage::
 confirm_vote_message
 ~~~~~~~~~~~~~~~~~~~~
 
-Intended for use in vote confirmatio templates, creates an appropriate
+Intended for use in vote confirmation templates, creates an appropriate
 message asking the user to confirm the given vote for the given object
 description.
 
