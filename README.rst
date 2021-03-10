@@ -397,12 +397,10 @@ Example usage::
 Changelog
 =========
 
-1.0 (unreleased)
+1.0 (2021-03-10)
 ----------------
 
-* Drop the ``voting.VERSION`` field, for now.
-  Client code can use APIs such as ``pkg_resources.get_distribution()``
-  to query or depend on specific versions of django-voting.
+* Replaced ``voting.VERSION`` with more canonical ``voting.__versino__``.
 
 * Added Django migrations.
 
