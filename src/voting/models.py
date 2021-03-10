@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.utils.encoding import python_2_unicode_compatible
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -21,7 +20,6 @@ SCORES = (
 )
 
 
-@python_2_unicode_compatible
 class Vote(models.Model):
     """
     A vote on an object by a User.
