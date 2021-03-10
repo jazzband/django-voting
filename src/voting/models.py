@@ -1,13 +1,7 @@
-from datetime import datetime
-
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-
-try:
-    from django.utils.timezone import now
-except ImportError:
-    now = datetime.now
+from django.utils.timezone import now
 
 from voting.managers import VoteManager
 from voting.utils.user_model import get_user_model_name
