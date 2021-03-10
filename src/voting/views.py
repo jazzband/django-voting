@@ -1,7 +1,3 @@
-# coding: utf-8
-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.apps import apps
 from django.http import (

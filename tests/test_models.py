@@ -1,17 +1,15 @@
 # coding: utf-8
-
-from __future__ import unicode_literals
-
 from django.contrib.auth.models import User
 from django.test import TestCase
 
 from voting.models import Vote
 from test_app.models import Item
 
-# Basic voting ###############################################################
-
 
 class BasicVotingTests(TestCase):
+    """
+    Basic voting
+    """
     def setUp(self):
         self.item = Item.objects.create(name="test1")
         self.users = []
@@ -68,8 +66,10 @@ class BasicVotingTests(TestCase):
             self.fail("Did nor raise 'ValueError: Invalid vote (must be +1/0/-1)'")
 
 
-# Retrieval of votes
 class VoteRetrievalTests(TestCase):
+    """
+    Retrieval of votes
+    """
     def setUp(self):
         self.items = []
         for name in ["test1", "test2", "test3", "test4"]:
