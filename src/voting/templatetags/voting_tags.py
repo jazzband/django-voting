@@ -5,6 +5,7 @@ from voting.models import Vote
 
 register = template.Library()
 
+
 class ScoreForObjectNode(template.Node):
     def __init__(self, object, context_var):
         self.object = object

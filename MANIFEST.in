@@ -1,0 +1,2 @@
+include LICENSE.rst README.rst tox.ini CHANGELOG.rst
+recursive-include docs *

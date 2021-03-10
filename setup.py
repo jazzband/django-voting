@@ -1,10 +1,11 @@
 from setuptools import setup, find_packages
 
-
 setup(
     name="django-voting",
-    use_scm_version=True,
+    use_scm_version={"version_scheme": "post-release"},
     description="Generic voting application for Django",
+    long_description=open("README.rst").read(),
+    long_description_content_type="text/x-rst",
     author="Jonathan Buchanan",
     author_email="jonathan.buchanan@gmail.com",
     maintainer="Jannis Leidel",
@@ -16,16 +17,25 @@ setup(
         "setuptools_scm",
     ],
     install_requires=[
-        "Django >=1.7",
+        "Django >=2.2",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Framework :: Django",
+        "Framework :: Django :: 2.2",
+        "Framework :: Django :: 3.0",
+        "Framework :: Django :: 3.1",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Topic :: Utilities",
     ],
 )
