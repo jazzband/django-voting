@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Item(models.Model):
     name = models.CharField(max_length=50)
 
@@ -7,4 +8,4 @@ class Item(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']
+        ordering = ["name"]

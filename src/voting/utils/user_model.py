@@ -1,5 +1,6 @@
 from django.conf import settings
 
+
 def get_user_model_name():
     """
     Returns the app_label.object_name string for the user model.
