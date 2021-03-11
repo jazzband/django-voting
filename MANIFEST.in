@@ -1,1 +1,1 @@
-include LICENSE.rst README.rst tox.ini
+include CHANGES.rst LICENSE.rst README.rst tox.ini
