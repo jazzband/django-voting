@@ -10,7 +10,7 @@ Django Voting
    :target: https://github.com/jazzband/django-voting/actions
    :alt: GitHub Actions
 
-.. image:: https://codecov.io/gh/jazzband/django-voting/branch/main/graph/badge.svg
+.. image:: https://codecov.io/gh/jazzband/django-voting/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/jazzband/django-voting
    :alt: Code coverage
 
