@@ -4,7 +4,7 @@ Changelog
 1.0 (2021-03-10)
 ----------------
 
-* Replaced ``voting.VERSION`` with more canonical ``voting.__versino__``.
+* Replaced ``voting.VERSION`` with more canonical ``voting.__version__``.
 
 * Added Django migrations.
 
