@@ -14,6 +14,14 @@ Django Voting
    :target: https://codecov.io/gh/jazzband/django-voting
    :alt: Code coverage
 
+.. image:: https://img.shields.io/pypi/pyversions/django-voting.svg
+   :target: https://pypi.python.org/pypi/django-voting
+   :alt: Supported Python versions
+
+.. image:: https://img.shields.io/pypi/djversions/django-voting.svg
+   :target: https://pypi.org/project/django-voting
+   :alt: Supported Django versions
+
 A generic voting application for Django projects, which allows
 registering of votes for any ``Model`` instance.
 
