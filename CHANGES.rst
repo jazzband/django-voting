@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+* Drop Django 3.0 support.
+
 1.0 (2021-03-10)
 ----------------
 
