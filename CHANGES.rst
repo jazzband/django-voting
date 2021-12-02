@@ -7,6 +7,8 @@ Unreleased
 * Drop Django 3.0 support.
 * Add Django 3.2 support.
 * Add Python 3.10 support.
+* Change ``Vote.object_id`` type to ``TextField`` to support
+  other primary key types like ``UUIDField``.
 
 1.0 (2021-03-10)
 ----------------

@@ -21,7 +21,7 @@ class Vote(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
+    object_id = models.TextField()
     object = GenericForeignKey("content_type", "object_id")
     vote = models.SmallIntegerField(choices=SCORES)
     time_stamp = models.DateTimeField(editable=False, default=now)
