@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum, Count
@@ -102,6 +104,10 @@ class VoteManager(models.Manager):
             id, score = item["object_id"], item["score"]
             if not score:
                 continue
+            if isinstance(model._meta.pk, models.AutoField):
+                id = int(id)
+            elif isinstance(model._meta.pk, models.UUIDField):
+                id = UUID(id)
             if id in objects:
                 yield objects[id], int(score)
 
