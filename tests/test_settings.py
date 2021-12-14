@@ -22,3 +22,5 @@ MIDDLEWARE_CLASSES = [
 ROOT_URLCONF = "voting.urls"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+USE_TZ = True
