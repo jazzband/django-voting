@@ -63,7 +63,7 @@ def vote_on_object(
 
     if extra_context is None:
         extra_context = {}
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect_to_login(request.path)
 
     try:
@@ -169,7 +169,7 @@ def xmlhttprequest_vote_on_object(
     """
     if request.method == "GET":
         return json_error_response("XMLHttpRequest votes can only be made using POST.")
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return json_error_response("Not authenticated.")
 
     try:
