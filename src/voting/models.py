@@ -34,7 +34,7 @@ class Vote(models.Model):
         unique_together = (("user", "content_type", "object_id"),)
 
     def __str__(self):
-        return "%s: %s on %s" % (self.user, self.vote, self.object)
+        return f"{self.user}: {self.vote} on {self.object}"
 
     def is_upvote(self):
         return self.vote == 1
