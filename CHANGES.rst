@@ -11,6 +11,7 @@ Unreleased
   other primary key types like ``UUIDField``.
 * Drop Django 3.1 support.
 * Add Django 4.0 support.
+* Drop Django 2.2 support.
 
 1.0 (2021-03-10)
 ----------------

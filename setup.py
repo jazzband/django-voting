@@ -17,13 +17,12 @@ setup(
         "setuptools_scm",
     ],
     install_requires=[
-        "Django >=2.2",
+        "Django >=3.2",
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Framework :: Django",
-        "Framework :: Django :: 2.2",
         "Framework :: Django :: 3.2",
         "Framework :: Django :: 4.0",
         "Intended Audience :: Developers",
