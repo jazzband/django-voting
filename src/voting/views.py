@@ -1,14 +1,15 @@
-from django.core.exceptions import ObjectDoesNotExist
+import json
+
 from django.apps import apps
+from django.contrib.auth.views import redirect_to_login
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import (
     Http404,
     HttpResponse,
     HttpResponseBadRequest,
     HttpResponseRedirect,
 )
-from django.contrib.auth.views import redirect_to_login
-from django.template import loader, RequestContext
-import json
+from django.template import RequestContext, loader
 
 from voting.models import Vote
 

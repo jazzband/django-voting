@@ -1,9 +1,9 @@
 from uuid import UUID
 
 from django.conf import settings
-from django.db import models
-from django.db.models import Sum, Count
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.db.models import Count, Sum
 
 ZERO_VOTES_ALLOWED = getattr(settings, "VOTING_ZERO_VOTES_ALLOWED", False)
 

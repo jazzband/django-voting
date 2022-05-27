@@ -1,14 +1,15 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
+from test_app.models import Item, ItemWithUUID
 
 from voting.models import Vote
-from test_app.models import Item, ItemWithUUID
 
 
 class BasicVotingTests(TestCase):
     """
     Basic voting
     """
+
     def setUp(self):
         self.item = Item.objects.create(name="test1")
         self.item_with_uuid = ItemWithUUID.objects.create(name="test1")
@@ -76,6 +77,7 @@ class VoteRetrievalTests(TestCase):
     """
     Retrieval of votes
     """
+
     def setUp(self):
         self.items = []
         self.items_with_uuid = []
@@ -103,7 +105,6 @@ class VoteRetrievalTests(TestCase):
         Vote.objects.record_vote(self.items_with_uuid[2], self.users[0], -1)
         Vote.objects.record_vote(self.items_with_uuid[3], self.users[0], 0)
 
-
     def test_get_pos_vote(self):
         vote = Vote.objects.get_for_user(self.items[1], self.users[0])
         result = (vote.vote, vote.is_upvote(), vote.is_downvote())
@@ -122,7 +123,8 @@ class VoteRetrievalTests(TestCase):
     def test_in_bulk1(self):
         votes = Vote.objects.get_for_user_in_bulk(self.items, self.users[0])
         self.assertEqual(
-            [(id, vote.vote) for id, vote in votes.items()], [("1", -1), ("2", 1), ("3", -1)]
+            [(id, vote.vote) for id, vote in votes.items()],
+            [("1", -1), ("2", 1), ("3", -1)],
         )
 
     def test_empty_items(self):
