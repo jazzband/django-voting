@@ -86,7 +86,7 @@ def vote_on_object(
     try:
         obj = model._default_manager.get(**lookup_kwargs)
     except ObjectDoesNotExist:
-        raise Http404("No %s found for %s." % (model._meta.app_label, lookup_kwargs))
+        raise Http404(f"No {model._meta.app_label} found for {lookup_kwargs}.")
 
     if request.method == "POST":
         if post_vote_redirect is not None:
@@ -110,7 +110,7 @@ def vote_on_object(
         return HttpResponseRedirect(next)
     else:
         if not template_name:
-            template_name = "%s/%s_confirm_vote.html" % (
+            template_name = "{}/{}_confirm_vote.html".format(
                 model._meta.app_label,
                 model._meta.object_name.lower(),
             )
@@ -141,9 +141,7 @@ def vote_on_object_with_lazy_model(request, app_label, model_name, *args, **kwar
     """
     model = apps.get_model(app_label, model_name)
     if not model:
-        return HttpResponseBadRequest(
-            "Model %s.%s does not exist" % (app_label, model_name)
-        )
+        return HttpResponseBadRequest(f"Model {app_label}.{model_name} does not exist")
     return vote_on_object(request, model=model, *args, **kwargs)
 
 
@@ -194,7 +192,7 @@ def xmlhttprequest_vote_on_object(
         obj = model._default_manager.get(**lookup_kwargs)
     except ObjectDoesNotExist:
         return json_error_response(
-            "No %s found for %s." % (model._meta.verbose_name, lookup_kwargs)
+            f"No {model._meta.verbose_name} found for {lookup_kwargs}."
         )
 
     # Vote and respond
