@@ -149,5 +149,5 @@ class VoteManager(models.Manager):
                     user__pk=user.id,
                 )
             )
-            vote_dict = dict([(vote.object_id, vote) for vote in votes])
+            vote_dict = {vote.object_id: vote for vote in votes}
         return vote_dict
