@@ -51,6 +51,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name="vote",
-            unique_together=set([("user", "content_type", "object_id")]),
+            unique_together={("user", "content_type", "object_id")},
         ),
     ]
