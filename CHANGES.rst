@@ -4,6 +4,7 @@ Changelog
 Unreleased
 ----------
 
+* Drop Python 3.6 support.
 * Drop Django 3.0 support.
 * Add Django 3.2 support.
 * Add Python 3.10 support.
