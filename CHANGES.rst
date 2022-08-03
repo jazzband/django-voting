@@ -13,6 +13,7 @@ Unreleased
 * Drop Django 3.1 support.
 * Add Django 4.0 support.
 * Drop Django 2.2 support.
+* Add Django 4.1 support.
 
 1.0 (2021-03-10)
 ----------------
