@@ -222,3 +222,13 @@ class VoteRetrievalTests(TestCase):
     def test_get_scores_in_bulk_no_items(self):
         result = Vote.objects.get_scores_in_bulk([])
         self.assertEqual(result, {})
+
+    def test_get_voted_users(self):
+        self.assertQuerysetEqual(
+            Vote.objects.get_voted_users(self.items[0]),
+            [{"user": 1}, {"user": 2}, {"user": 3}, {"user": 4}],
+        )
+        self.assertQuerysetEqual(
+            Vote.objects.get_voted_users(self.items[1]), [{"user": 1}]
+        )
+        self.assertQuerysetEqual(Vote.objects.get_voted_users(self.items[3]), [])
