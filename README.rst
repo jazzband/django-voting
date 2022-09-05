@@ -144,6 +144,11 @@ functions:
 
       Returns a dictionary mapping object ids to votes.
 
+    * ``get_voted_users(object)`` -- Gets all users
+      voted on the given object.
+
+      Returns a list of objects contains user ids.
+
 Generic Views
 -------------
 

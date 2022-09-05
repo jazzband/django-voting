@@ -14,6 +14,7 @@ Unreleased
 * Add Django 4.0 support.
 * Drop Django 2.2 support.
 * Add Django 4.1 support.
+* Add ``get_voted_users`` to get the users voted on the given object.
 
 1.0 (2021-03-10)
 ----------------

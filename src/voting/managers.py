@@ -151,3 +151,14 @@ class VoteManager(models.Manager):
             )
             vote_dict = {vote.object_id: vote for vote in votes}
         return vote_dict
+
+    def get_voted_users(self, obj):
+        """
+        Gets all users voted on the given object.
+        """
+        ctype = ContentType.objects.get_for_model(obj)
+        return (
+            self.filter(content_type=ctype, object_id=obj._get_pk_val())
+            .order_by("user")
+            .values("user")
+        )
