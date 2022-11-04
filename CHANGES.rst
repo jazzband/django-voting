@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.1.0 (2022-11-04)
+------------------
 
 * Drop Python 3.6 support.
 * Drop Django 3.0 support.
