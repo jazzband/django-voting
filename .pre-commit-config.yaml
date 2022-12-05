@@ -9,7 +9,7 @@ repos:
           - "--target-version"
           - "py37"
   - repo: https://github.com/PyCQA/flake8
-    rev: "5.0.4"
+    rev: "6.0.0"
     hooks:
       - id: flake8
         args: ["--max-line-length", "88"]
@@ -18,7 +18,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.2.2
+    rev: v3.3.0
     hooks:
     -   id: pyupgrade
         args: [--py37-plus]
