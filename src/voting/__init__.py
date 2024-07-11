@@ -1,7 +1,7 @@
-from pkg_resources import DistributionNotFound, get_distribution
+from importlib.metadata import version
 
 try:
-    __version__ = get_distribution("django-voting").version
-except DistributionNotFound:
+    __version__ = version("django-voting")
+except Exception:
     # package is not installed
     __version__ = None
